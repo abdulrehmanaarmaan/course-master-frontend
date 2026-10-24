@@ -870,7 +870,7 @@ export default function StudentCoursePlayer() {
                                                                 <div className="flex min-w-0 items-stretch gap-1">
                                                                     <button
                                                                         type="button"
-                                                                        className={`flex min-h-12 min-w-0 flex-1 items-start gap-3 rounded-lg px-2 py-3 text-left text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary sm:px-3 ${active
+                                                                        className={`flex min-h-12 min-w-0 flex-1 items-start gap-3 rounded-lg px-2 py-3 text-left text-sm transition-colors focus-visible:outline-2 focus-visible:outline-primary sm:px-3 ${active
                                                                             ? "text-primary"
                                                                             : ""
                                                                             }`}
