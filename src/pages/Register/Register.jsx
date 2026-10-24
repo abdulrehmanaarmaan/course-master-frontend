@@ -95,7 +95,7 @@ export default function Register() {
                                 value={form.password}
                                 onChange={handleChange}
                                 placeholder="Create a password"
-                                className="input input-bordered w-full focus:input-primary text-sm min-h-[44px]"
+                                className="input input-bordered w-full focus:input-primary text-sm min-h-11"
                                 required
                             />
                         </div>
