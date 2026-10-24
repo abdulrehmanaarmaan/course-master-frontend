@@ -677,8 +677,8 @@ export default function StudentCoursePlayer() {
                                 <button
                                     type="button"
                                     className={`btn w-full min-w-0 sm:col-span-2 lg:col-span-1 ${isCompleted
-                                            ? "btn-success"
-                                            : "btn-primary"
+                                        ? "btn-success"
+                                        : "btn-primary"
                                         }`}
                                     onClick={handleCompleteLesson}
                                     disabled={
@@ -862,8 +862,8 @@ export default function StudentCoursePlayer() {
                                                             <div
                                                                 key={lessonKey}
                                                                 className={`min-w-0 overflow-hidden rounded-lg transition-colors ${active
-                                                                        ? "bg-primary/10"
-                                                                        : "hover:bg-base-200"
+                                                                    ? "bg-primary/10"
+                                                                    : "hover:bg-base-200"
                                                                     }`}
                                                             >
                                                                 {/* Separate controls prevent nested buttons. */}
@@ -871,8 +871,8 @@ export default function StudentCoursePlayer() {
                                                                     <button
                                                                         type="button"
                                                                         className={`flex min-h-12 min-w-0 flex-1 items-start gap-3 rounded-lg px-2 py-3 text-left text-sm transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary sm:px-3 ${active
-                                                                                ? "text-primary"
-                                                                                : ""
+                                                                            ? "text-primary"
+                                                                            : ""
                                                                             }`}
                                                                         onClick={() =>
                                                                             selectLesson(
@@ -938,8 +938,8 @@ export default function StudentCoursePlayer() {
                                                                     <button
                                                                         type="button"
                                                                         className={`my-1 mr-1 inline-flex min-h-10 min-w-10 shrink-0 items-center justify-center self-start rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 sm:mr-2 ${durationOpen
-                                                                                ? "bg-primary/15 text-primary"
-                                                                                : "text-base-content/60 hover:bg-base-300 hover:text-base-content"
+                                                                            ? "bg-primary/15 text-primary"
+                                                                            : "text-base-content/60 hover:bg-base-300 hover:text-base-content"
                                                                             }`}
                                                                         onClick={() =>
                                                                             toggleLessonDuration(
@@ -947,8 +947,8 @@ export default function StudentCoursePlayer() {
                                                                             )
                                                                         }
                                                                         aria-label={`${durationOpen
-                                                                                ? "Hide"
-                                                                                : "Show"
+                                                                            ? "Hide"
+                                                                            : "Show"
                                                                             } duration for ${lesson.title ||
                                                                             `Lesson ${lessonIndex + 1}`
                                                                             }`}
@@ -989,7 +989,7 @@ export default function StudentCoursePlayer() {
                                                                                     Lesson duration
                                                                                 </p>
 
-                                                                                <p className="mt-1 break-words text-sm font-semibold text-base-content sm:text-base">
+                                                                                <p className="mt-1 wrap-break-word text-sm font-semibold text-base-content sm:text-base">
                                                                                     {formatLessonDuration(
                                                                                         lesson.duration
                                                                                     )}
