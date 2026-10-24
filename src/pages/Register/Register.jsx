@@ -134,7 +134,7 @@ export default function Register() {
                         <button
                             disabled={loading}
                             type="submit"
-                            className="btn btn-primary w-full btn-md sm:btn-lg shadow-lg hover:shadow-xl mt-4 font-bold min-h-[48px]"
+                            className="btn btn-primary w-full btn-md sm:btn-lg shadow-lg hover:shadow-xl mt-4 font-bold min-h-12"
                         >
                             {loading ? (
                                 <>
