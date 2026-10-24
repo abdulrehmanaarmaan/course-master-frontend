@@ -801,7 +801,7 @@ export default function StudentCoursePlayer() {
                                     <section key={moduleId}>
                                         <button
                                             type="button"
-                                            className="flex w-full min-w-0 items-start justify-between gap-3 p-4 text-left transition-colors hover:bg-base-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px]"
+                                            className="flex w-full min-w-0 items-start justify-between gap-3 p-4 text-left transition-colors hover:bg-base-200 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-[-2px]"
                                             onClick={() =>
                                                 toggleModule(moduleId)
                                             }
