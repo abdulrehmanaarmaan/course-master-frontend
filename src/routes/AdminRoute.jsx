@@ -1,7 +1,40 @@
-import { Navigate } from "react-router-dom";
+// AdminRoute.jsx
+import { Navigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getToken } from "../utils/auth";
+import { getMe } from "../services/auth.api";
 
-export default function AdminRoute({ children, me }) {
-    if (!me) return null; // me loading থাকলে কিছু রেন্ডার না
-    if (me.role !== "admin") return <Navigate to="/student" replace />;
+export default function AdminRoute({ children }) {
+    const [status, setStatus] = useState("loading");
+    const [user, setUser] = useState(null);
+    const { pathname } = useLocation()
+
+    useEffect(() => {
+        let cancelled = false;
+
+        if (!getToken()) {
+            () => setStatus("unauthenticated");
+        }
+
+        getMe()
+            .then((res) => {
+                if (cancelled) return;
+                setUser(res.data);
+                setStatus("loaded");
+            })
+            .catch(() => {
+                if (cancelled) return;
+                setStatus("unauthenticated");
+            });
+
+        return () => {
+            cancelled = true;
+        };
+    }, []);
+
+    if (status === "loading") return <div>Loading…</div>;
+    if (status === "unauthenticated") return <Navigate to="/login" replace />;
+    if (user?.role !== "admin" && pathname.startsWith("/admin")) return <Navigate to="/not-found" replace />;
+
     return children;
 }

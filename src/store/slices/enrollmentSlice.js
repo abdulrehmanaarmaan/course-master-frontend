@@ -1,5 +1,10 @@
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { enrollInCourse, getMyEnrollments, completeLesson } from "../../services/enrollment.api";
+import {
+    enrollInCourse,
+    getMyEnrollments,
+    completeLesson,
+} from "../../services/enrollment.api";
 
 export const enrollCourseAsync = createAsyncThunk(
     "enrollment/enrollCourse",
@@ -45,6 +50,7 @@ export const completeLessonAsync = createAsyncThunk(
 
 const enrollmentSlice = createSlice({
     name: "enrollment",
+
     initialState: {
         enrollments: [],
         loading: false,
@@ -52,62 +58,97 @@ const enrollmentSlice = createSlice({
         error: null,
         success: null,
     },
+
     reducers: {
         clearError: (state) => {
             state.error = null;
         },
+
         clearSuccess: (state) => {
             state.success = null;
         },
     },
+
     extraReducers: (builder) => {
         builder
+            // Enroll in a course
             .addCase(enrollCourseAsync.pending, (state) => {
                 state.enrolling = true;
                 state.error = null;
+                state.success = null;
             })
             .addCase(enrollCourseAsync.fulfilled, (state, action) => {
                 state.enrolling = false;
                 state.success = "Successfully enrolled!";
-                state.enrollments.push(action.payload);
+                state.error = null;
+
+                const newEnrollment = action.payload;
+
+                if (
+                    newEnrollment?._id &&
+                    !state.enrollments.some(
+                        (enrollment) => enrollment._id === newEnrollment._id
+                    )
+                ) {
+                    state.enrollments.push(newEnrollment);
+                }
             })
             .addCase(enrollCourseAsync.rejected, (state, action) => {
                 state.enrolling = false;
-                state.error = action.payload;
+                state.error = action.payload || "Failed to enroll";
             })
+
+            // Fetch the current student's enrollments
             .addCase(fetchMyEnrollments.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
             .addCase(fetchMyEnrollments.fulfilled, (state, action) => {
                 state.loading = false;
-                // Code-6 bug: action.payload is the array, but trying to access .data makes it undefined
-                state.enrollments = action.payload.data;
+
+                // The thunk already returns res.data, which is the array.
+                state.enrollments = Array.isArray(action.payload)
+                    ? action.payload
+                    : [];
+
+                state.error = null;
             })
             .addCase(fetchMyEnrollments.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;
+                state.error =
+                    action.payload || "Failed to load enrollments";
             })
+
+            // Mark a lesson as completed
             .addCase(completeLessonAsync.pending, (state) => {
                 state.error = null;
             })
             .addCase(completeLessonAsync.fulfilled, (state, action) => {
                 state.success = "Lesson marked complete!";
-                const updated = action.payload;
-                if (!updated) return;
-                const idx = state.enrollments.findIndex((e) => e._id === updated._id);
-                if (idx !== -1) {
-                    state.enrollments[idx] = updated;
-                } else {
-                    // safe fallback
-                    state.enrollments.push(updated);
+
+                const updatedEnrollment = action.payload;
+
+                if (!updatedEnrollment?._id) return;
+
+                const index = state.enrollments.findIndex(
+                    (enrollment) =>
+                        enrollment._id === updatedEnrollment._id
+                );
+
+                if (index !== -1) {
+                    state.enrollments[index] = {
+                        ...state.enrollments[index],
+                        ...updatedEnrollment,
+                    };
                 }
             })
             .addCase(completeLessonAsync.rejected, (state, action) => {
-                state.error = action.payload;
+                state.error =
+                    action.payload || "Failed to complete lesson";
             });
     },
 });
 
 export const { clearError, clearSuccess } = enrollmentSlice.actions;
+
 export default enrollmentSlice.reducer;

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { fetchEnrollments, fetchAssignments } from "../../../store/slices/adminSlice";
 import { getAnalytics } from "../../../services/admin.api";
 import {
@@ -16,7 +16,6 @@ import {
     Legend,
     ResponsiveContainer,
 } from "recharts";
-import { Link } from "react-router-dom";
 import {
     Plus,
     BookOpen,
@@ -24,7 +23,6 @@ import {
     Users,
     BarChart3,
     Video,
-    Settings,
     TrendingUp,
 } from "lucide-react";
 
@@ -58,21 +56,21 @@ export default function AdminOverview() {
             title: "Total Enrollments",
             value: enrollments.length,
             colorClass: "bg-gradient-to-br from-primary to-primary/80 text-primary-content",
-            icon: <Users className="w-8 h-8" />,
+            icon: <Users className="w-6 h-6 sm:w-8 sm:h-8" />,
             trend: "+12%",
         },
         {
             title: "Pending Assignments",
             value: assignments.filter((a) => a.status === "submitted").length,
             colorClass: "bg-gradient-to-br from-warning to-warning/80 text-warning-content",
-            icon: <FileText className="w-8 h-8" />,
+            icon: <FileText className="w-6 h-6 sm:w-8 sm:h-8" />,
             trend: null,
         },
         {
             title: "Reviewed Assignments",
             value: assignments.filter((a) => a.status === "reviewed").length,
             colorClass: "bg-gradient-to-br from-success to-success/80 text-success-content",
-            icon: <FileText className="w-8 h-8" />,
+            icon: <FileText className="w-6 h-6 sm:w-8 sm:h-8" />,
             trend: null,
         },
     ];
@@ -80,37 +78,37 @@ export default function AdminOverview() {
     const quickActions = [
         {
             label: "Add Course",
-            icon: <Plus className="w-5 h-5" />,
+            icon: <Plus className="w-4 h-4 sm:w-5 sm:h-5" />,
             path: "/admin/courses/create",
             color: "btn-primary",
         },
         {
             label: "Manage Courses",
-            icon: <BookOpen className="w-5 h-5" />,
+            icon: <BookOpen className="w-4 h-4 sm:w-5 sm:h-5" />,
             path: "/admin/courses",
             color: "btn-secondary",
         },
         {
             label: "Review Assignments",
-            icon: <FileText className="w-5 h-5" />,
+            icon: <FileText className="w-4 h-4 sm:w-5 sm:h-5" />,
             path: "/admin/assignments",
             color: "btn-warning",
         },
         {
             label: "Video Classes",
-            icon: <Video className="w-5 h-5" />,
+            icon: <Video className="w-4 h-4 sm:w-5 sm:h-5" />,
             path: "/admin/video-classes",
             color: "btn-accent",
         },
         {
             label: "Manage Users",
-            icon: <Users className="w-5 h-5" />,
+            icon: <Users className="w-4 h-4 sm:w-5 sm:h-5" />,
             path: "/admin/users",
             color: "btn-info",
         },
         {
             label: "Analytics",
-            icon: <BarChart3 className="w-5 h-5" />,
+            icon: <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5" />,
             path: "/admin/analytics",
             color: "btn-success",
         },
@@ -118,7 +116,7 @@ export default function AdminOverview() {
 
     // Prepare chart data
     const enrollmentChartData = analytics?.chartData || [];
-    
+
     const assignmentStatusData = [
         {
             name: "Reviewed",
@@ -134,33 +132,40 @@ export default function AdminOverview() {
 
     // Enrollment by course (top 5)
     const courseEnrollmentData = analytics?.topCourses?.slice(0, 5).map((course) => ({
-        name: course.courseTitle?.substring(0, 15) || "Unknown",
+        name: course.courseTitle || "Unknown",
         enrollments: course.count,
     })) || [];
 
     return (
-        <div className="space-y-4 sm:space-y-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <h1 className="page-heading">Admin Dashboard Overview</h1>
-                <div className="badge badge-primary badge-lg gap-2">
-                    <TrendingUp className="w-4 h-4" />
+        <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <h1 className="text-xl sm:text-2xl font-bold text-base-content">
+                    Admin Dashboard Overview
+                </h1>
+                <div className="badge badge-primary badge-md sm:badge-lg gap-1.5 shrink-0">
+                    <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                     Live Dashboard
                 </div>
             </div>
 
             {/* Quick Actions */}
             <div className="card bg-base-100 border border-base-300 shadow-sm">
-                <div className="card-body p-4 sm:p-6">
-                    <h2 className="page-heading-h2 mb-4">Quick Actions</h2>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                <div className="card-body p-3 sm:p-6">
+                    <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-base-content">
+                        Quick Actions
+                    </h2>
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-3">
                         {quickActions.map((action, idx) => (
                             <button
                                 key={idx}
                                 onClick={() => navigate(action.path)}
-                                className={`btn ${action.color} btn-sm sm:btn-md flex-col gap-2 h-auto py-4`}
+                                className={`btn ${action.color} btn-sm sm:btn-md flex-col gap-1.5 min-h-[70px] sm:h-auto py-2.5 sm:py-4 px-2`}
                             >
                                 {action.icon}
-                                <span className="text-xs sm:text-sm">{action.label}</span>
+                                <span className="text-[11px] sm:text-xs leading-tight text-center truncate max-w-full">
+                                    {action.label}
+                                </span>
                             </button>
                         ))}
                     </div>
@@ -168,22 +173,29 @@ export default function AdminOverview() {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {stats.map((stat, idx) => (
-                    <div key={idx} className={`card shadow-lg ${stat.colorClass} hover:scale-105 transition-transform`}>
-                        <div className="card-body p-4 sm:p-6">
+                    <div
+                        key={idx}
+                        className={`card shadow-md ${stat.colorClass} hover:scale-[1.02] transition-transform`}
+                    >
+                        <div className="card-body p-4 sm:p-5">
                             <div className="flex justify-between items-start">
-                                <div className="flex-1">
-                                    <p className="opacity-90 text-sm sm:text-base mb-2">{stat.title}</p>
-                                    <h2 className="text-3xl sm:text-4xl font-bold">{stat.value}</h2>
+                                <div className="flex-1 min-w-0">
+                                    <p className="opacity-90 text-xs sm:text-sm font-medium mb-1 truncate">
+                                        {stat.title}
+                                    </p>
+                                    <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
+                                        {stat.value}
+                                    </h2>
                                     {stat.trend && (
-                                        <div className="flex items-center gap-1 mt-2 text-sm opacity-90">
-                                            <TrendingUp className="w-4 h-4" />
+                                        <div className="flex items-center gap-1 mt-1.5 text-xs sm:text-sm opacity-90">
+                                            <TrendingUp className="w-3.5 h-3.5" />
                                             {stat.trend}
                                         </div>
                                     )}
                                 </div>
-                                <div className="opacity-80">{stat.icon}</div>
+                                <div className="opacity-80 shrink-0 ml-2">{stat.icon}</div>
                             </div>
                         </div>
                     </div>
@@ -193,37 +205,44 @@ export default function AdminOverview() {
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 {/* Enrollment Trend Chart */}
-                <div className="card bg-base-100 border border-base-300 shadow-sm">
-                    <div className="card-body p-4 sm:p-6">
-                        <h2 className="page-heading-h2 mb-4">Enrollment Trends (Last 30 Days)</h2>
+                <div className="card bg-base-100 border border-base-300 shadow-sm overflow-hidden">
+                    <div className="card-body p-3 sm:p-6">
+                        <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-base-content">
+                            Enrollment Trends (Last 30 Days)
+                        </h2>
                         {loading ? (
-                            <div className="flex justify-center items-center h-64">
-                                <span className="loading loading-spinner loading-lg"></span>
+                            <div className="flex justify-center items-center h-60">
+                                <span className="loading loading-spinner loading-lg text-primary"></span>
                             </div>
                         ) : enrollmentChartData.length > 0 ? (
-                            <ResponsiveContainer width="100%" height={250}>
-                                <BarChart data={enrollmentChartData}>
-                                    <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} />
-                                    <XAxis
-                                        dataKey="displayDate"
-                                        tick={{ fontSize: 11 }}
-                                        angle={-45}
-                                        textAnchor="end"
-                                        height={80}
-                                    />
-                                    <YAxis tick={{ fontSize: 11 }} />
-                                    <Tooltip
-                                        contentStyle={{
-                                            backgroundColor: "var(--color-base-100)",
-                                            border: "1px solid var(--color-base-300)",
-                                            borderRadius: "8px",
-                                        }}
-                                    />
-                                    <Bar dataKey="enrollments" fill="#78A083" radius={[8, 8, 0, 0]} />
-                                </BarChart>
-                            </ResponsiveContainer>
+                            <div className="w-full overflow-x-auto">
+                                <div className="min-w-[320px] h-[220px] sm:h-[260px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={enrollmentChartData} margin={{ top: 10, right: 10, left: -15, bottom: 25 }}>
+                                            <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                                            <XAxis
+                                                dataKey="displayDate"
+                                                tick={{ fontSize: 10 }}
+                                                angle={-45}
+                                                textAnchor="end"
+                                                height={50}
+                                            />
+                                            <YAxis tick={{ fontSize: 10 }} />
+                                            <Tooltip
+                                                contentStyle={{
+                                                    backgroundColor: "rgba(255, 255, 255, 0.95)",
+                                                    border: "1px solid #ccc",
+                                                    borderRadius: "8px",
+                                                    fontSize: "12px",
+                                                }}
+                                            />
+                                            <Bar dataKey="enrollments" fill="#78A083" radius={[4, 4, 0, 0]} />
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
                         ) : (
-                            <div className="flex justify-center items-center h-64 text-base-content/60">
+                            <div className="flex justify-center items-center h-60 text-xs sm:text-sm text-base-content/60">
                                 No enrollment data available
                             </div>
                         )}
@@ -231,38 +250,47 @@ export default function AdminOverview() {
                 </div>
 
                 {/* Assignment Status Pie Chart */}
-                <div className="card bg-base-100 border border-base-300 shadow-sm">
-                    <div className="card-body p-4 sm:p-6">
-                        <h2 className="page-heading-h2 mb-4">Assignment Status</h2>
+                <div className="card bg-base-100 border border-base-300 shadow-sm overflow-hidden">
+                    <div className="card-body p-3 sm:p-6">
+                        <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-base-content">
+                            Assignment Status
+                        </h2>
                         {assignmentStatusData.some((d) => d.value > 0) ? (
-                            <ResponsiveContainer width="100%" height={250}>
-                                <PieChart>
-                                    <Pie
-                                        data={assignmentStatusData}
-                                        cx="50%"
-                                        cy="50%"
-                                        labelLine={false}
-                                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                                        outerRadius={80}
-                                        fill="#8884d8"
-                                        dataKey="value"
-                                    >
-                                        {assignmentStatusData.map((entry, index) => (
-                                            <Cell key={`cell-${index}`} fill={entry.color} />
-                                        ))}
-                                    </Pie>
-                                    <Tooltip
-                                        contentStyle={{
-                                            backgroundColor: "var(--color-base-100)",
-                                            border: "1px solid var(--color-base-300)",
-                                            borderRadius: "8px",
-                                        }}
-                                    />
-                                    <Legend />
-                                </PieChart>
-                            </ResponsiveContainer>
+                            <div className="w-full overflow-x-auto">
+                                <div className="min-w-[280px] h-[220px] sm:h-[260px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <PieChart>
+                                            <Pie
+                                                data={assignmentStatusData}
+                                                cx="50%"
+                                                cy="50%"
+                                                labelLine={false}
+                                                label={({ name, percent }) =>
+                                                    `${name} ${(percent * 100).toFixed(0)}%`
+                                                }
+                                                outerRadius={70}
+                                                fill="#8884d8"
+                                                dataKey="value"
+                                            >
+                                                {assignmentStatusData.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                ))}
+                                            </Pie>
+                                            <Tooltip
+                                                contentStyle={{
+                                                    backgroundColor: "rgba(255, 255, 255, 0.95)",
+                                                    border: "1px solid #ccc",
+                                                    borderRadius: "8px",
+                                                    fontSize: "12px",
+                                                }}
+                                            />
+                                            <Legend wrapperStyle={{ fontSize: "12px" }} />
+                                        </PieChart>
+                                    </ResponsiveContainer>
+                                </div>
+                            </div>
                         ) : (
-                            <div className="flex justify-center items-center h-64 text-base-content/60">
+                            <div className="flex justify-center items-center h-60 text-xs sm:text-sm text-base-content/60">
                                 No assignment data available
                             </div>
                         )}
@@ -272,29 +300,39 @@ export default function AdminOverview() {
 
             {/* Top Courses Chart */}
             {courseEnrollmentData.length > 0 && (
-                <div className="card bg-base-100 border border-base-300 shadow-sm">
-                    <div className="card-body p-4 sm:p-6">
-                        <h2 className="page-heading-h2 mb-4">Top Courses by Enrollments</h2>
-                        <ResponsiveContainer width="100%" height={300}>
-                            <BarChart data={courseEnrollmentData} layout="vertical">
-                                <CartesianGrid strokeDasharray="3 3" stroke="currentColor" opacity={0.1} />
-                                <XAxis type="number" tick={{ fontSize: 11 }} />
-                                <YAxis
-                                    dataKey="name"
-                                    type="category"
-                                    width={100}
-                                    tick={{ fontSize: 11 }}
-                                />
-                                <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: "var(--color-base-100)",
-                                        border: "1px solid var(--color-base-300)",
-                                        borderRadius: "8px",
-                                    }}
-                                />
-                                <Bar dataKey="enrollments" fill="#50727B" radius={[0, 8, 8, 0]} />
-                            </BarChart>
-                        </ResponsiveContainer>
+                <div className="card bg-base-100 border border-base-300 shadow-sm overflow-hidden">
+                    <div className="card-body p-3 sm:p-6">
+                        <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-base-content">
+                            Top Courses by Enrollments
+                        </h2>
+                        <div className="w-full overflow-x-auto">
+                            <div className="min-w-[450px] h-[260px] sm:h-[300px]">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={courseEnrollmentData} layout="vertical" margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
+                                        <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                                        <XAxis type="number" tick={{ fontSize: 10 }} />
+                                        <YAxis
+                                            dataKey="name"
+                                            type="category"
+                                            width={120}
+                                            tick={{ fontSize: 10 }}
+                                            tickFormatter={(val) =>
+                                                val.length > 15 ? `${val.substring(0, 15)}...` : val
+                                            }
+                                        />
+                                        <Tooltip
+                                            contentStyle={{
+                                                backgroundColor: "rgba(255, 255, 255, 0.95)",
+                                                border: "1px solid #ccc",
+                                                borderRadius: "8px",
+                                                fontSize: "12px",
+                                            }}
+                                        />
+                                        <Bar dataKey="enrollments" fill="#50727B" radius={[0, 6, 6, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
@@ -302,46 +340,57 @@ export default function AdminOverview() {
             {/* Analytics Summary Section */}
             {analytics && (
                 <div className="card bg-base-100 border border-base-300 shadow-sm">
-                    <div className="card-body p-4 sm:p-6">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-                            <h2 className="page-heading-h2">Analytics Summary</h2>
-                            <Link to="/admin/analytics" className="btn btn-primary btn-sm">
+                    <div className="card-body p-3 sm:p-6">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                            <h2 className="text-base sm:text-lg font-bold text-base-content">
+                                Analytics Summary
+                            </h2>
+                            <Link to="/admin/analytics" className="btn btn-primary btn-xs sm:btn-sm w-fit">
                                 View Full Analytics →
                             </Link>
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-                            <div className="stat bg-primary/10 rounded-lg p-3 sm:p-4">
-                                <div className="stat-title text-xs">Total Courses</div>
-                                <div className="stat-value text-lg sm:text-2xl text-primary">{analytics.stats?.totalCourses || 0}</div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-4">
+                            <div className="stat bg-primary/10 rounded-lg p-2.5 sm:p-4">
+                                <div className="stat-title text-[10px] sm:text-xs">Total Courses</div>
+                                <div className="stat-value text-base sm:text-2xl text-primary">
+                                    {analytics.stats?.totalCourses || 0}
+                                </div>
                             </div>
-                            <div className="stat bg-secondary/10 rounded-lg p-3 sm:p-4">
-                                <div className="stat-title text-xs">Total Students</div>
-                                <div className="stat-value text-lg sm:text-2xl text-secondary">{analytics.stats?.totalStudents || 0}</div>
+                            <div className="stat bg-secondary/10 rounded-lg p-2.5 sm:p-4">
+                                <div className="stat-title text-[10px] sm:text-xs">Total Students</div>
+                                <div className="stat-value text-base sm:text-2xl text-secondary">
+                                    {analytics.stats?.totalStudents || 0}
+                                </div>
                             </div>
-                            <div className="stat bg-accent/10 rounded-lg p-3 sm:p-4">
-                                <div className="stat-title text-xs">Total Enrollments</div>
-                                <div className="stat-value text-lg sm:text-2xl text-accent">{analytics.stats?.totalEnrollments || 0}</div>
+                            <div className="stat bg-accent/10 rounded-lg p-2.5 sm:p-4">
+                                <div className="stat-title text-[10px] sm:text-xs">Total Enrollments</div>
+                                <div className="stat-value text-base sm:text-2xl text-accent">
+                                    {analytics.stats?.totalEnrollments || 0}
+                                </div>
                             </div>
-                            <div className="stat bg-info/10 rounded-lg p-3 sm:p-4">
-                                <div className="stat-title text-xs">Last 30 Days</div>
-                                <div className="stat-value text-lg sm:text-2xl text-info">{analytics.stats?.enrollmentsLast30Days || 0}</div>
+                            <div className="stat bg-info/10 rounded-lg p-2.5 sm:p-4">
+                                <div className="stat-title text-[10px] sm:text-xs">Last 30 Days</div>
+                                <div className="stat-value text-base sm:text-2xl text-info">
+                                    {analytics.stats?.enrollmentsLast30Days || 0}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             )}
 
-            {/* Recent Enrollments: table on md+, cards on small screens */}
+            {/* Recent Enrollments */}
             <div>
+                {/* Desktop Table View */}
                 <div className="hidden md:block">
-                    <div className="card bg-base-100 border border-base-300 shadow">
-                        <div className="card-body">
-                            <h2 className="page-heading-h2">Recent Enrollments</h2>
+                    <div className="card bg-base-100 border border-base-300 shadow-sm">
+                        <div className="card-body p-5">
+                            <h2 className="text-lg font-bold mb-3 text-base-content">Recent Enrollments</h2>
                             {enrollments.length === 0 ? (
-                                <p className="text-base-content/70">No enrollments yet</p>
+                                <p className="text-sm text-base-content/70">No enrollments yet</p>
                             ) : (
                                 <div className="overflow-x-auto">
-                                    <table className="table table-sm">
+                                    <table className="table table-sm w-full">
                                         <thead>
                                             <tr>
                                                 <th>Student</th>
@@ -352,9 +401,11 @@ export default function AdminOverview() {
                                         <tbody>
                                             {enrollments.slice(0, 10).map((enroll) => (
                                                 <tr key={enroll._id}>
-                                                    <td>{enroll.student?.name}</td>
-                                                    <td>{enroll.course?.title}</td>
-                                                    <td>{new Date(enroll.createdAt).toLocaleDateString()}</td>
+                                                    <td className="font-medium">{enroll.student?.name}</td>
+                                                    <td className="text-base-content/80">{enroll.course?.title}</td>
+                                                    <td className="text-xs text-base-content/60">
+                                                        {new Date(enroll.createdAt).toLocaleDateString()}
+                                                    </td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -365,19 +416,25 @@ export default function AdminOverview() {
                     </div>
                 </div>
 
-                <div className="md:hidden space-y-3">
+                {/* Mobile Cards View */}
+                <div className="md:hidden space-y-2.5">
+                    <h2 className="text-base font-bold text-base-content px-1">Recent Enrollments</h2>
                     {enrollments.length === 0 ? (
-                        <p className="text-base-content/70">No enrollments yet</p>
+                        <p className="text-xs text-base-content/70 px-1">No enrollments yet</p>
                     ) : (
                         enrollments.slice(0, 10).map((enroll) => (
-                            <div key={enroll._id} className="card bg-base-100 shadow-sm">
-                                <div className="card-body">
-                                    <div className="flex justify-between items-start">
-                                        <div>
-                                            <div className="font-semibold">{enroll.student?.name}</div>
-                                            <div className="text-sm text-base-content/70">{enroll.course?.title}</div>
+                            <div key={enroll._id} className="card bg-base-100 border border-base-300 shadow-sm p-3">
+                                <div className="flex justify-between items-start gap-2">
+                                    <div className="min-w-0 flex-1">
+                                        <div className="font-semibold text-xs sm:text-sm text-base-content truncate">
+                                            {enroll.student?.name}
                                         </div>
-                                        <div className="text-xs text-base-content/60">{new Date(enroll.createdAt).toLocaleString()}</div>
+                                        <div className="text-[11px] sm:text-xs text-base-content/70 truncate">
+                                            {enroll.course?.title}
+                                        </div>
+                                    </div>
+                                    <div className="text-[10px] sm:text-xs text-base-content/60 shrink-0">
+                                        {new Date(enroll.createdAt).toLocaleDateString()}
                                     </div>
                                 </div>
                             </div>

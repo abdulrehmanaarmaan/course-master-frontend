@@ -13,7 +13,7 @@ export default function CoursesSection() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
-    // query states
+    // Query states
     const [page, setPage] = useState(1);
     const [limit] = useState(8);
     const [search, setSearch] = useState("");
@@ -38,7 +38,7 @@ export default function CoursesSection() {
             const res = await getCourses(params);
             setCourses(res.data.courses || []);
             setTotalPages(res.data.totalPages || 1);
-        } catch (err) {
+        } catch {
             setError("Failed to load courses");
         } finally {
             setLoading(false);
@@ -56,55 +56,61 @@ export default function CoursesSection() {
         fetchCourses();
     };
 
-    // reset page when filters change
+    // Reset page when filters change
     useEffect(() => {
         setPage(1);
     }, [sort, category, tags]);
 
     return (
-        <div className="space-y-6">
-
+        <div className="w-full min-w-0 space-y-6">
             <CoursesFilters
-                search={search} setSearch={setSearch}
-                sort={sort} setSort={setSort}
-                category={category} setCategory={setCategory}
-                tags={tags} setTags={setTags}
+                search={search}
+                setSearch={setSearch}
+                sort={sort}
+                setSort={setSort}
+                category={category}
+                setCategory={setCategory}
+                tags={tags}
+                setTags={setTags}
                 onSearchSubmit={onSearchSubmit}
             />
 
-            {/* states */}
+            {/* Loading State */}
             {loading && (
-                <div className="flex justify-center py-10">
-                    <span className="loading loading-spinner loading-lg"></span>
+                <div className="flex justify-center py-12">
+                    <span className="loading loading-spinner loading-lg text-primary"></span>
                 </div>
             )}
 
+            {/* Error State */}
             {error && (
-                <div className="alert alert-error">
-                    <span>{error}</span>
+                <div className="alert alert-error shadow-sm text-xs sm:text-sm">
+                    <span className="break-words">{error}</span>
                 </div>
             )}
 
+            {/* Empty State */}
             {!loading && !error && courses.length === 0 && (
-                <div className="rounded-xl border border-primary/20 bg-base-200 p-6 text-center">
-                    <h3 className="text-lg font-semibold text-primary">
+                <div className="rounded-2xl border border-primary/20 bg-base-200/60 p-6 text-center">
+                    <h3 className="text-base sm:text-lg font-semibold text-primary">
                         No courses found
                     </h3>
-                    <p className="mt-1 text-base-content/70">
+                    <p className="mt-1 text-xs sm:text-sm text-base-content/70">
                         Try adjusting your search or filters.
                     </p>
                 </div>
             )}
 
-
+            {/* Courses Content */}
             {!loading && !error && courses.length > 0 && (
                 <>
                     <CoursesGrid courses={courses} />
+
                     {user?.role === "admin" && (
-                        <div className="flex justify-center pt-4">
+                        <div className="flex justify-center pt-2 sm:pt-4">
                             <Link
                                 to="/admin/courses"
-                                className="btn btn-primary btn-wide"
+                                className="btn btn-primary btn-md sm:btn-wide w-full sm:w-auto"
                             >
                                 Manage Courses
                             </Link>

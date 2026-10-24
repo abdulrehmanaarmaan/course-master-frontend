@@ -1,114 +1,236 @@
-import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { useEffect, createElement } from "react";
+import { NavLink } from "react-router-dom";
 import {
     LayoutDashboard,
-    BookOpen,
     PlusCircle,
     Users,
     ClipboardList,
     BarChart3,
     Video,
-    Menu,
     X,
+    Book,
+    UserRound,
 } from "lucide-react";
 
-export default function AdminSidebar() {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const location = useLocation();
+const menuItems = [
+    {
+        to: "/admin",
+        label: "Overview",
+        Icon: LayoutDashboard,
+        end: true,
+    },
+    {
+        to: "/admin/courses/create",
+        label: "Add Course",
+        Icon: PlusCircle,
+        end: true,
+    },
+    {
+        to: "/admin/video-classes",
+        label: "Video Classes",
+        Icon: Video,
+        end: true,
+    },
+    {
+        to: "/admin/enrollments",
+        label: "Enrollments",
+        Icon: Users,
+        end: true,
+    },
+    {
+        to: "/admin/assignments",
+        label: "Assignments",
+        Icon: ClipboardList,
+        end: true,
+    },
+    {
+        to: "/admin/analytics",
+        label: "Analytics",
+        Icon: BarChart3,
+        end: true,
+    },
+    {
+        to: "/admin/courses",
+        label: "Manage Courses",
+        Icon: Book,
+        end: true,
+    },
+    {
+        to: "/admin/users",
+        label: "Manage Users",
+        Icon: Users,
+        end: true,
+    },
+    {
+        to: "/admin/profile",
+        label: "My Profile",
+        Icon: UserRound,
+        end: true,
+    }
+];
 
-    const Item = ({ to, label, Icon, end = true, onClick, showLabel = true }) => {
-        const linkClass = ({ isActive: navIsActive }) => {
-            // Custom active check for routes with children
-            let isActive = navIsActive;
+function SidebarItem({
+    to,
+    label,
+    Icon,
+    end = true,
+    onClick,
+}) {
+    const linkClass = ({ isActive }) => {
+        const baseClasses =
+            "flex min-w-0 items-center gap-3 rounded-xl px-3.5 py-2.5 transition-colors duration-200 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-base-200 min-h-[40px]";
 
-            const baseClasses = "flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200";
-            if (isActive) {
-                return `${baseClasses} bg-primary text-primary-content font-semibold shadow-md`;
-            }
-            return `${baseClasses} text-base-content font-medium hover:bg-primary/20 hover:text-primary`;
-        };
+        if (isActive) {
+            return `${baseClasses} bg-primary text-primary-content font-semibold`;
+        }
 
-        return (
-            <NavLink
-                to={to}
-                end={end}
-                onClick={onClick}
-                className={linkClass}
-            >
-                <Icon className="w-5 h-5 shrink-0" />
-                {showLabel && <span className="text-sm sm:text-base">{label}</span>}
-            </NavLink>
-        );
+        return `${baseClasses} text-base-content/80 font-medium hover:bg-primary/10 hover:text-primary`;
     };
 
-    const menuItems = [
-        { to: "/admin", label: "Overview", Icon: LayoutDashboard, end: true },
-        { to: "/admin/courses/create", label: "Add Course", Icon: PlusCircle, end: true },
-        { to: "/admin/video-classes", label: "Video Classes", Icon: Video, end: true },
-        { to: "/admin/enrollments", label: "Enrollments", Icon: Users, end: true },
-        { to: "/admin/assignments", label: "Assignments", Icon: ClipboardList, end: true },
-        { to: "/admin/analytics", label: "Analytics", Icon: BarChart3, end: true },
-        { to: "/admin/users", label: "Manage Users", Icon: Users, end: true },
-    ];
+    return (
+        <NavLink
+            to={to}
+            end={end}
+            onClick={onClick}
+            className={linkClass}
+        >
+            {createElement(Icon, {
+                className: "h-5 w-5 shrink-0",
+                "aria-hidden": true,
+            })}
+
+            <span className="min-w-0 truncate text-sm">
+                {label}
+            </span>
+        </NavLink>
+    );
+}
+
+export default function AdminSidebar({ isOpen, onClose }) {
+
+    // Prevent background scrolling while mobile drawer is open
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+
+        const handleKeyDown = (event) => {
+            if (event.key === "Escape" && onClose) {
+                onClose();
+            }
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isOpen, onClose]);
 
     return (
         <>
-            {/* Mobile menu button */}
-            <div className="lg:hidden fixed top-16 left-0 right-0 z-40 bg-base-200 border-b-2 border-base-300 p-2 shadow-md">
-                <button
-                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    className="btn btn-sm btn-ghost text-base-content"
-                >
-                    {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                    <span className="ml-2 font-semibold">Admin Menu</span>
-                </button>
-            </div>
-
-            {/* Mobile drawer */}
-            {mobileMenuOpen && (
+            {/* Mobile drawer backdrop and panel */}
+            {isOpen && (
                 <div
-                    className="lg:hidden fixed inset-0 z-50 bg-black/50"
-                    onClick={() => setMobileMenuOpen(false)}
+                    className="fixed inset-0 z-50 bg-neutral-950/60 backdrop-blur-[2px] lg:hidden"
+                    onClick={onClose}
                 >
                     <aside
-                        className="bg-base-200 border-r-2 border-base-300 w-64 h-full p-4 space-y-2 overflow-y-auto shadow-xl"
-                        onClick={(e) => e.stopPropagation()}
+                        id="admin-mobile-navigation"
+                        className="flex h-dvh w-[min(20rem,88vw)] max-w-full flex-col overflow-hidden border-r border-base-300 bg-base-200 shadow-2xl animate-in slide-in-from-left duration-200"
+                        onClick={(event) => event.stopPropagation()}
+                        aria-label="Admin navigation"
                     >
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="font-bold text-lg text-base-content">Admin Menu</h2>
+                        {/* Drawer heading */}
+                        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-base-300 px-4 py-4">
+                            <div className="flex min-w-0 items-center gap-2.5">
+                                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                                    <LayoutDashboard
+                                        className="h-5 w-5"
+                                        aria-hidden="true"
+                                    />
+                                </div>
+
+                                <div className="min-w-0">
+                                    <h2 className="truncate text-base font-bold text-base-content">
+                                        Admin Menu
+                                    </h2>
+                                    <p className="text-xs text-base-content/60">
+                                        Manage your platform
+                                    </p>
+                                </div>
+                            </div>
+
                             <button
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="btn btn-sm btn-ghost"
+                                type="button"
+                                onClick={onClose}
+                                className="btn btn-ghost btn-sm btn-square shrink-0"
+                                aria-label="Close admin navigation"
                             >
-                                <X className="w-5 h-5" />
+                                <X
+                                    className="h-5 w-5"
+                                    aria-hidden="true"
+                                />
                             </button>
                         </div>
-                        {menuItems.map((item) => (
-                            <Item
-                                key={item.to}
-                                to={item.to}
-                                label={item.label}
-                                Icon={item.Icon}
-                                end={item.end}
-                                onClick={() => setMobileMenuOpen(false)}
-                                showLabel={true}
-                            />
-                        ))}
+
+                        {/* Scrollable navigation */}
+                        <nav
+                            className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 sm:p-4"
+                            aria-label="Admin menu"
+                        >
+                            <p className="mb-3 px-3 text-xs font-bold uppercase tracking-wider text-base-content/50">
+                                Management
+                            </p>
+
+                            <div className="space-y-1.5">
+                                {menuItems.map((item) => (
+                                    <SidebarItem
+                                        key={item.to}
+                                        {...item}
+                                        onClick={onClose}
+                                    />
+                                ))}
+                            </div>
+                        </nav>
+
+                        {/* Drawer footer */}
+                        <div className="shrink-0 border-t border-base-300 px-4 py-3">
+                            <p className="text-center text-xs text-base-content/50">
+                                Admin Dashboard
+                            </p>
+                        </div>
                     </aside>
                 </div>
             )}
 
-            {/* Desktop sidebar */}
-            <aside className="hidden lg:block bg-base-200 border-r-2 border-base-300 min-h-screen w-64 p-4 space-y-2 transition-all duration-200 shadow-lg">
-                {menuItems.map((item) => (
-                    <Item
-                        key={item.to}
-                        to={item.to}
-                        label={item.label}
-                        Icon={item.Icon}
-                        end={item.end}
-                    />
-                ))}
+            {/* Desktop and laptop permanent sidebar */}
+            <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-56 shrink-0 flex-col overflow-hidden border-r border-base-300 bg-base-200/50 lg:flex xl:w-60 2xl:w-64">
+                <nav
+                    className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-3 xl:p-4"
+                    aria-label="Admin navigation"
+                >
+                    <p className="mb-3 px-3 text-xs font-bold uppercase tracking-wider text-base-content/50">
+                        Management
+                    </p>
+
+                    <div className="space-y-1.5">
+                        {menuItems.map((item) => (
+                            <SidebarItem
+                                key={item.to}
+                                {...item}
+                            />
+                        ))}
+                    </div>
+                </nav>
+
+                <div className="shrink-0 border-t border-base-300 px-4 py-3">
+                    <p className="truncate text-center text-xs text-base-content/50">
+                        Admin Dashboard
+                    </p>
+                </div>
             </aside>
         </>
     );

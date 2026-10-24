@@ -1,50 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { getMe } from "../../../services/auth.api";
-import AdminRoute from "../../../routes/AdminRoute";
 import AdminSidebar from "./AdminSidebar";
-// import AdminSidebar from "./components/AdminSidebar";
-// import { useEffect, useState } from "react";
-// import { getToken } from "../../utils/auth";
-// import { getMe } from "../../services/auth.api";
-// import AdminRoute from "../../routes/AdminRoute";
+import DashboardHeader from "../../../components/Dashboard/DashboardHeader";
 
 export default function AdminDashboard() {
-    const [me, setMe] = useState(null);
-
-    useEffect(() => {
-        const loadMe = async () => {
-            try {
-                const res = await getMe();
-                setMe(res.data);
-            } catch (err) {
-                console.error("Failed to load user:", err);
-            }
-        };
-        loadMe();
-    }, []);
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
     return (
-        <AdminRoute me={me}>
-            {/* full width override */}
-            <div className="w-full max-w-none flex flex-col lg:flex-row min-h-[80vh]">
+        <div className="min-h-screen flex flex-col w-full bg-base-100">
+            {/* Top Dashboard Header */}
+            <DashboardHeader onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
 
-                {/* sidebar - hidden on mobile, shown via drawer */}
-                <div className="hidden lg:block shrink-0">
-                    <AdminSidebar />
-                </div>
+            <div className="flex flex-1 w-full min-w-0 relative">
+                {/* Sidebar Component */}
+                <AdminSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-                {/* Mobile drawer toggle button */}
-                <div className="lg:hidden">
-                    <AdminSidebar />
-                </div>
-
-                {/* content area */}
-                <main className="flex-1 p-2 sm:p-4 lg:p-5 bg-base-100 w-full">
+                {/* Main Content Area */}
+                <main className="flex-1 min-w-0 w-full p-3 sm:p-5 lg:p-6 bg-base-100">
                     <Outlet />
                 </main>
-
             </div>
-        </AdminRoute>
+        </div>
     );
 }

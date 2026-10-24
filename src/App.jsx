@@ -1,100 +1,252 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import MainLayout from "./layouts/MainLayout";
-import ProtectedRoute from "./routes/ProtectedRoute";
 
-// Public pages - keep these loaded immediately
+import MainLayout from "./layouts/MainLayout";
+
+// Public pages
 import Home from "./pages/Home/Home";
 import Courses from "./pages/Courses/Courses";
-import CourseDetails from "./pages/CousrseDetails/CourseDetails";
+import CourseDetails from "./pages/CourseDetails/CourseDetails";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
 import NotFound from "./pages/NotFound/NotFound";
+import About from "./pages/About/About";
 
-// Lazy load heavy components for code splitting
-const CoursePlayer = lazy(() => import("./pages/CoursePlayer/CoursePlayer"));
-const StudentDashboard = lazy(() => import("./pages/student/StudentDashboard"));
-const AdminDashboard = lazy(() => import("./pages/admin/components/AdminDashboard"));
-const AdminOverview = lazy(() => import("./pages/admin/pages/AdminOverview"));
-const ManageCourses = lazy(() => import("./pages/admin/pages/ManageCourses"));
-const Enrollments = lazy(() => import("./pages/admin/pages/Enrollments"));
-const Assignments = lazy(() => import("./pages/admin/pages/Assignments"));
-const Analytics = lazy(() => import("./pages/admin/pages/Analytics"));
-const CreateCourse = lazy(() => import("./pages/admin/pages/CreateCourse"));
-const EditCourse = lazy(() => import("./pages/admin/pages/EditCourse"));
-const ManageUsers = lazy(() => import("./pages/admin/pages/ManageUsers"));
-const VideoClasses = lazy(() => import("./pages/admin/pages/VideoClasses"));
+// Route guards
+import GuestRoute from "./routes/GuestRoute";
+import StudentRoute from "./routes/StudentRoute";
+import AdminRoute from "./routes/AdminRoute";
 
-// Loading component
-const LoadingSpinner = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <span className="loading loading-spinner loading-lg"></span>
-  </div>
+// Student course player
+import StudentCoursePlayer from "./pages/StudentCoursePlayer/StudentCoursePlayer";
+import Profile from "./pages/Profile/Profile";
+import StudentEnrolledCourses from "./pages/student/pages/StudentEnrolledCourses";
+import DashboardLayoutSkeleton from "./components/Loaders/DashboardLayoutSkeleton";
+import DashboardContentSkeleton from "./components/Loaders/DashboardContentSkeleton";
+
+// Lazy-loaded student and admin pages
+const StudentDashboard = lazy(
+  () => import("./pages/student/components/StudentDashboard")
+);
+
+const AdminDashboard = lazy(
+  () => import("./pages/admin/components/AdminDashboard")
+);
+
+const AdminOverview = lazy(
+  () => import("./pages/admin/pages/AdminOverview")
+);
+
+const ManageCourses = lazy(
+  () => import("./pages/admin/pages/ManageCourses")
+);
+
+const Enrollments = lazy(
+  () => import("./pages/admin/pages/Enrollments")
+);
+
+const Assignments = lazy(
+  () => import("./pages/admin/pages/Assignments")
+);
+
+const Analytics = lazy(
+  () => import("./pages/admin/pages/Analytics")
+);
+
+const CreateCourse = lazy(
+  () => import("./pages/admin/pages/CreateCourse")
+);
+
+const EditCourse = lazy(
+  () => import("./pages/admin/pages/EditCourse")
+);
+
+const ManageUsers = lazy(
+  () => import("./pages/admin/pages/ManageUsers")
+);
+
+const VideoClasses = lazy(
+  () => import("./pages/admin/pages/VideoClasses")
 );
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Main public layout */}
+        {/* Public website layout: public navbar and footer */}
         <Route element={<MainLayout />}>
-          {/* public */}
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/courses/:id" element={<CourseDetails />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          <Route path="/about" element={<About />} />
 
-          {/* student dashboard (protected) */}
           <Route
-            path="/student"
+            path="/login"
             element={
-              <ProtectedRoute>
-                <Suspense fallback={<LoadingSpinner />}>
-                  <StudentDashboard />
-                </Suspense>
-              </ProtectedRoute>
+              <GuestRoute>
+                <Login />
+              </GuestRoute>
             }
           />
 
-          {/* course player (protected) */}
           <Route
-            path="/courses/:id/player"
+            path="/register"
             element={
-              <ProtectedRoute>
-                <Suspense fallback={<LoadingSpinner />}>
-                  <CoursePlayer />
-                </Suspense>
-              </ProtectedRoute>
+              <GuestRoute>
+                <Register />
+              </GuestRoute>
             }
           />
 
-          {/* admin dashboard with nested routes (protected) */}
-          <Route
-            path="/admin"
-            element={
-              <ProtectedRoute>
-                <Suspense fallback={<LoadingSpinner />}>
-                  <AdminDashboard />
-                </Suspense>
-              </ProtectedRoute>
-            }
-          >
-            {/* nested admin pages */}
-            <Route index element={<Suspense fallback={<LoadingSpinner />}><AdminOverview /></Suspense>} />
-            <Route path="courses" element={<Suspense fallback={<LoadingSpinner />}><ManageCourses /></Suspense>} />
-            <Route path="courses/edit/:id" element={<Suspense fallback={<LoadingSpinner />}><EditCourse /></Suspense>} />
-            <Route path="courses/create" element={<Suspense fallback={<LoadingSpinner />}><CreateCourse /></Suspense>} />
-            <Route path="video-classes" element={<Suspense fallback={<LoadingSpinner />}><VideoClasses /></Suspense>} />
-            <Route path="enrollments" element={<Suspense fallback={<LoadingSpinner />}><Enrollments /></Suspense>} />
-            <Route path="assignments" element={<Suspense fallback={<LoadingSpinner />}><Assignments /></Suspense>} />
-            <Route path="analytics" element={<Suspense fallback={<LoadingSpinner />}><Analytics /></Suspense>} />
-            <Route path="users" element={<Suspense fallback={<LoadingSpinner />}><ManageUsers /></Suspense>} />
-          </Route>
-
-          {/* 404 */}
+          {/* Public-layout fallback */}
           <Route path="*" element={<NotFound />} />
         </Route>
+
+        {/* Student routes: outside the public layout */}
+        <Route
+          path="/student"
+          element={
+            <StudentRoute>
+              <Suspense fallback={<DashboardLayoutSkeleton role="student" />}>
+                <StudentDashboard />
+              </Suspense>
+            </StudentRoute>
+          }
+        >
+
+          <Route
+            index
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <StudentEnrolledCourses />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="profile"
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <Profile />
+              </Suspense>
+            }
+          />
+        </Route>
+
+        {/* Course player: protected, without the public navbar/footer */}
+        <Route
+          path="/courses/:courseId/player"
+          element={
+            <StudentRoute>
+              <StudentCoursePlayer />
+            </StudentRoute>
+          }
+        />
+
+        {/* Admin routes: protected, outside the public layout */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute>
+              <Suspense fallback={<DashboardLayoutSkeleton role="admin" />}>
+                <AdminDashboard />
+              </Suspense>
+            </AdminRoute>
+          }
+        >
+          <Route
+            index
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <AdminOverview />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="courses/create"
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <CreateCourse />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="courses/edit/:id"
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <EditCourse />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="video-classes"
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <VideoClasses />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="enrollments"
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <Enrollments />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="courses"
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <ManageCourses />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="assignments"
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <Assignments />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="analytics"
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <Analytics />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="users"
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <ManageUsers />
+              </Suspense>
+            }
+          />
+
+          <Route
+            path="profile"
+            element={
+              <Suspense fallback={<DashboardContentSkeleton />}>
+                <Profile />
+              </Suspense>
+            }
+          />
+        </Route>
+
+        {/* Global fallback for unmatched dashboard/player routes */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

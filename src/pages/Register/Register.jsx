@@ -19,7 +19,6 @@ export default function Register() {
             setLoading(true);
             setError(null);
 
-            // Only send adminKey if it's provided
             const payload = {
                 name: form.name,
                 email: form.email,
@@ -40,39 +39,40 @@ export default function Register() {
     };
 
     return (
-        <div className="max-w-md mx-auto px-2 sm:px-4 py-8">
-            <div className="card bg-base-100 border-2 border-base-300 shadow-2xl">
-                <div className="card-body p-6 sm:p-8">
-                    <div className="text-center mb-6">
-                        <h1 className="text-3xl sm:text-4xl font-extrabold mb-2">
+        <div className="w-full max-w-md mx-auto px-3 sm:px-6 py-6 sm:py-12">
+            <div className="card bg-base-100 border border-base-300 shadow-2xl rounded-2xl sm:rounded-3xl">
+                <div className="card-body p-5 sm:p-8">
+                    <div className="text-center mb-5">
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold mb-1.5 leading-tight">
                             <span className="gradient-text">Create Account</span>
                         </h1>
-                        <p className="text-base-content/70">Start your learning journey today</p>
+                        <p className="text-xs sm:text-sm text-base-content/70">Start your learning journey today</p>
                     </div>
 
                     {error && (
-                        <div className="alert alert-error shadow-lg">
-                            <span>{error}</span>
+                        <div className="alert alert-error shadow-lg text-xs sm:text-sm p-3 rounded-xl mb-2">
+                            <span className="break-words w-full">{error}</span>
                         </div>
                     )}
 
-                    <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+                    <form onSubmit={handleSubmit} className="space-y-4 mt-2">
                         <div className="form-control">
-                            <label className="label">
-                                <span className="label-text font-semibold">Full Name</span>
+                            <label className="label py-1">
+                                <span className="label-text text-xs sm:text-sm font-semibold">Full Name</span>
                             </label>
                             <input
                                 name="name"
                                 value={form.name}
                                 onChange={handleChange}
                                 placeholder="Enter your full name"
-                                className="input input-bordered w-full focus:input-primary"
+                                className="input input-bordered w-full focus:input-primary text-sm min-h-[44px]"
                                 required
                             />
                         </div>
+
                         <div className="form-control">
-                            <label className="label">
-                                <span className="label-text font-semibold">Email</span>
+                            <label className="label py-1">
+                                <span className="label-text text-xs sm:text-sm font-semibold">Email</span>
                             </label>
                             <input
                                 name="email"
@@ -80,13 +80,14 @@ export default function Register() {
                                 value={form.email}
                                 onChange={handleChange}
                                 placeholder="Enter your email"
-                                className="input input-bordered w-full focus:input-primary"
+                                className="input input-bordered w-full focus:input-primary text-sm min-h-[44px]"
                                 required
                             />
                         </div>
+
                         <div className="form-control">
-                            <label className="label">
-                                <span className="label-text font-semibold">Password</span>
+                            <label className="label py-1">
+                                <span className="label-text text-xs sm:text-sm font-semibold">Password</span>
                             </label>
                             <input
                                 name="password"
@@ -94,47 +95,46 @@ export default function Register() {
                                 value={form.password}
                                 onChange={handleChange}
                                 placeholder="Create a password"
-                                className="input input-bordered w-full focus:input-primary"
+                                className="input input-bordered w-full focus:input-primary text-sm min-h-[44px]"
                                 required
                             />
                         </div>
 
                         {/* Admin Registration Key (Optional) */}
-                        <div className="form-control">
-                            <div className="flex items-center justify-between mb-2">
+                        <div className="form-control pt-1">
+                            <div className="flex items-center justify-between gap-2 mb-1.5">
                                 <label className="label py-0">
-                                    <span className="label-text text-xs sm:text-sm">Admin Registration (Optional)</span>
+                                    <span className="label-text text-xs sm:text-sm font-semibold">Admin Key (Optional)</span>
                                 </label>
                                 <button
                                     type="button"
                                     onClick={() => setShowAdminKey(!showAdminKey)}
-                                    className="btn btn-xs btn-ghost"
+                                    className="btn btn-xs btn-ghost text-xs"
                                 >
-                                    {showAdminKey ? "Hide" : "Show"}
+                                    {showAdminKey ? "Hide" : "Show Key Field"}
                                 </button>
                             </div>
                             {showAdminKey && (
-                                <input
-                                    name="adminKey"
-                                    type="password"
-                                    value={form.adminKey}
-                                    onChange={handleChange}
-                                    placeholder="Enter admin registration key"
-                                    className="input input-bordered w-full input-sm"
-                                />
-                            )}
-                            {showAdminKey && (
-                                <label className="label py-0">
-                                    <span className="label-text-alt text-xs opacity-70">
-                                        Only required for admin account creation
+                                <div className="space-y-1.5 animate-in fade-in duration-200">
+                                    <input
+                                        name="adminKey"
+                                        type="password"
+                                        value={form.adminKey}
+                                        onChange={handleChange}
+                                        placeholder="Enter admin registration key"
+                                        className="input input-bordered w-full text-sm min-h-[40px]"
+                                    />
+                                    <span className="label-text-alt text-[11px] text-base-content/60 block px-1">
+                                        Only required for creating elevated administrative accounts.
                                     </span>
-                                </label>
+                                </div>
                             )}
                         </div>
 
                         <button
                             disabled={loading}
-                            className="btn btn-primary w-full btn-lg shadow-lg hover:shadow-xl mt-6"
+                            type="submit"
+                            className="btn btn-primary w-full btn-md sm:btn-lg shadow-lg hover:shadow-xl mt-4 font-bold min-h-[48px]"
                         >
                             {loading ? (
                                 <>
@@ -147,9 +147,9 @@ export default function Register() {
                         </button>
                     </form>
 
-                    <p className="text-sm mt-6 text-center text-base-content/70">
+                    <p className="text-xs sm:text-sm mt-6 text-center text-base-content/70">
                         Already have an account?{" "}
-                        <Link className="link link-primary font-semibold" to="/login">
+                        <Link className="link link-primary font-bold ml-1 inline-block" to="/login">
                             Login
                         </Link>
                     </p>

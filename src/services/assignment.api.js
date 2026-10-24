@@ -4,13 +4,13 @@ import api from "./api";
 
 export const getMyAssignments = (courseId = null) => {
     return api.get("/assignments/my", {
-        params: courseId ? { courseId } : {},
+        params: courseId ? { courseId } : {}
     });
 };
 
 export const getAssignmentStats = (courseId) => {
     return api.get("/assignments/stats", {
-        params: { courseId },
+        params: { courseId }
     });
 };
 

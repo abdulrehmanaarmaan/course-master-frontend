@@ -55,7 +55,7 @@
   prefersdark: true;
   color-scheme: dark;
 
-  /* Primary - Sage Green (#78A083) - Lighter for dark mode */
+  /* Primary - Sage Green (#78A083) */
   --color-primary: #78A083;
   --color-primary-content: #35374B;
 
@@ -67,7 +67,7 @@
   --color-accent: #344955;
   --color-accent-content: #ffffff;
 
-  /* Base Colors - Dark backgrounds using color palette */
+  /* Base Colors - Dark backgrounds */
   --color-base-100: #35374B;
   --color-base-200: #344955;
   --color-base-300: #50727B;
@@ -90,15 +90,20 @@
 }
 
 /* ============================================
-   Global Styles & Enhancements
+   Global Styles
    ============================================ */
-* {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-}
 
 body {
   @apply bg-base-100 text-base-content;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Disable transitions only while switching themes */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition: none !important;
 }
 
 /* Smooth scrolling */
@@ -127,7 +132,8 @@ html {
 /* Enhanced buttons */
 .btn {
   @apply font-semibold shadow-sm;
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
 }
 
 .btn:hover {
@@ -227,7 +233,7 @@ html {
 /* Enhanced cards */
 .card {
   @apply shadow-sm border border-base-300;
-  transition: all 0.3s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .card:hover {
@@ -235,9 +241,11 @@ html {
 }
 
 /* Enhanced inputs */
-.input, .textarea, .select {
+.input,
+.textarea,
+.select {
   @apply border-base-300 focus:border-primary focus:ring-2 focus:ring-primary/20;
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 /* Gradient backgrounds */
@@ -250,7 +258,7 @@ html {
   background-image: linear-gradient(135deg, #78A083, #50727B, #344955);
 }
 
-/* Dark mode gradient text enhancement - brighter colors */
+/* Dark mode gradient text enhancement */
 [data-theme="dark"] .gradient-text {
   background-image: linear-gradient(135deg, #9BC4A0, #78A083, #6B9A8F);
 }
@@ -338,7 +346,7 @@ html {
   @apply bg-base-300 text-base-content;
 }
 
-/* Page Heading - Consistent style across all pages */
+/* Page Heading */
 .page-heading {
   @apply text-xl sm:text-2xl md:text-3xl font-bold;
   background: linear-gradient(135deg, #78A083, #50727B);

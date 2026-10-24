@@ -1,28 +1,42 @@
 export default function CoursesFilters({
-    search, setSearch,
-    sort, setSort,
-    category, setCategory,
-    tags, setTags,
-    onSearchSubmit
+    search,
+    setSearch,
+    sort,
+    setSort,
+    category,
+    setCategory,
+    tags,
+    setTags,
+    onSearchSubmit,
 }) {
     return (
-        <div className="space-y-3">
-            {/* Search */}
-            <form onSubmit={onSearchSubmit} className="join w-full md:w-auto">
+        <div className="w-full min-w-0 space-y-3">
+            {/* Search Input */}
+            <form
+                onSubmit={onSearchSubmit}
+                className="flex w-full max-w-xl min-w-0 flex-col items-stretch gap-2 sm:flex-row"
+            >
                 <input
-                    className="input input-bordered join-item w-full md:w-64"
-                    placeholder="Search by title / instructor"
+                    type="text"
+                    className="input input-bordered input-sm sm:input-md flex-1 min-w-0 w-full border border-base-300 focus:outline-none focus:border-primary"
+                    placeholder="Search by title or instructor..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                 />
-                <button className="btn join-item btn-primary">Search</button>
+
+                <button
+                    type="submit"
+                    className="btn btn-primary btn-sm sm:btn-md shrink-0 w-full sm:w-auto"
+                >
+                    Search
+                </button>
             </form>
 
-            {/* Filters row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {/* Filter Inputs Grid */}
+            <div className="grid w-full min-w-0 grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3 md:grid-cols-3">
                 {/* Sort */}
                 <select
-                    className="select select-bordered w-full"
+                    className="select select-bordered select-sm sm:select-md w-full min-w-0 border border-base-300 focus:outline-none focus:border-primary"
                     value={sort}
                     onChange={(e) => setSort(e.target.value)}
                 >
@@ -33,7 +47,8 @@ export default function CoursesFilters({
 
                 {/* Category */}
                 <input
-                    className="input input-bordered w-full"
+                    type="text"
+                    className="input input-bordered input-sm sm:input-md w-full min-w-0 border border-base-300 focus:outline-none focus:border-primary"
                     placeholder="Category (e.g. web)"
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
@@ -41,8 +56,9 @@ export default function CoursesFilters({
 
                 {/* Tags */}
                 <input
-                    className="input input-bordered w-full"
-                    placeholder="Tags (comma separated e.g. mern,react)"
+                    type="text"
+                    className="input input-bordered input-sm sm:input-md w-full min-w-0 border border-base-300 focus:outline-none focus:border-primary sm:col-span-2 md:col-span-1"
+                    placeholder="Tags (e.g. mern, react)"
                     value={tags}
                     onChange={(e) => setTags(e.target.value)}
                 />

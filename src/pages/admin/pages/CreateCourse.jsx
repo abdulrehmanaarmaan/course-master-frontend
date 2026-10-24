@@ -74,23 +74,23 @@ export default function CreateCourse() {
 
     if (success) {
         return (
-            <div className="alert alert-success">
+            <div className="alert alert-success w-full min-w-0 break-words">
                 <span>{success}</span>
             </div>
         );
     }
 
     return (
-        <div className="max-w-4xl w-full">
+        <div className="mx-auto w-full max-w-4xl min-w-0">
             <h1 className="page-heading mb-4 sm:mb-6">Create New Course</h1>
 
             {error && (
-                <div className="alert alert-error mb-4">
+                <div className="alert alert-error mb-4 w-full min-w-0 break-words">
                     <span>{error}</span>
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+            <form onSubmit={handleSubmit} className="w-full min-w-0 space-y-4 sm:space-y-5">
                 <div className="form-control">
                     <label className="label">
                         <span className="label-text font-semibold">Course Title *</span>
@@ -101,7 +101,7 @@ export default function CreateCourse() {
                         value={form.title}
                         onChange={handleChange}
                         placeholder="Enter course title"
-                        className="input input-bordered"
+                        className="input input-bordered w-full min-w-0"
                         required
                     />
                 </div>
@@ -115,12 +115,12 @@ export default function CreateCourse() {
                         value={form.description}
                         onChange={handleChange}
                         placeholder="Course description"
-                        className="textarea textarea-bordered h-28"
+                        className="textarea textarea-bordered h-28 w-full min-w-0"
                         required
                     />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text font-semibold">Instructor Name *</span>
@@ -131,7 +131,7 @@ export default function CreateCourse() {
                             value={form.instructorName}
                             onChange={handleChange}
                             placeholder="Instructor name"
-                            className="input input-bordered"
+                            className="input input-bordered w-full min-w-0"
                             required
                         />
                     </div>
@@ -146,14 +146,14 @@ export default function CreateCourse() {
                             value={form.price}
                             onChange={handleChange}
                             placeholder="Price in taka"
-                            className="input input-bordered"
+                            className="input input-bordered w-full min-w-0"
                             min="0"
                             required
                         />
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
                     <div className="form-control">
                         <label className="label">
                             <span className="label-text font-semibold">Category</span>
@@ -164,7 +164,7 @@ export default function CreateCourse() {
                             value={form.category}
                             onChange={handleChange}
                             placeholder="e.g., Web Development"
-                            className="input input-bordered"
+                            className="input input-bordered w-full min-w-0"
                         />
                     </div>
 
@@ -178,18 +178,18 @@ export default function CreateCourse() {
                             value={form.tags}
                             onChange={handleChange}
                             placeholder="react, javascript, web"
-                            className="input input-bordered"
+                            className="input input-bordered w-full min-w-0"
                         />
                     </div>
                 </div>
 
                 {/* Syllabus Section */}
-                <div className="divider">Course Syllabus (Modules & Lessons)</div>
-                <div className="space-y-4">
+                <div className="divider text-center text-sm sm:text-base">Course Syllabus (Modules & Lessons)</div>
+                <div className="min-w-0 space-y-4">
                     {form.syllabus.map((module, modIdx) => (
-                        <div key={modIdx} className="card bg-base-100 border border-base-300">
-                            <div className="card-body">
-                                <div className="flex justify-between items-center mb-4">
+                        <div key={modIdx} className="card min-w-0 bg-base-100 border border-base-300">
+                            <div className="card-body min-w-0 p-3 sm:p-6">
+                                <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                                     <h3 className="font-bold text-lg">Module {modIdx + 1}</h3>
                                     <button
                                         type="button"
@@ -197,7 +197,7 @@ export default function CreateCourse() {
                                             const newSyllabus = form.syllabus.filter((_, i) => i !== modIdx);
                                             setForm({ ...form, syllabus: newSyllabus });
                                         }}
-                                        className="btn btn-sm btn-error"
+                                        className="btn btn-sm btn-error w-full sm:w-auto"
                                     >
                                         Remove Module
                                     </button>
@@ -216,14 +216,14 @@ export default function CreateCourse() {
                                             setForm({ ...form, syllabus: newSyllabus });
                                         }}
                                         placeholder="e.g., Introduction to React"
-                                        className="input input-bordered"
+                                        className="input input-bordered w-full min-w-0"
                                         required
                                     />
                                 </div>
 
                                 {/* Lessons */}
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-center">
+                                <div className="min-w-0 space-y-3">
+                                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                         <h4 className="font-semibold">Lessons</h4>
                                         <button
                                             type="button"
@@ -242,16 +242,16 @@ export default function CreateCourse() {
                                                 });
                                                 setForm({ ...form, syllabus: newSyllabus });
                                             }}
-                                            className="btn btn-sm btn-outline"
+                                            className="btn btn-sm btn-outline w-full sm:w-auto"
                                         >
                                             + Add Lesson
                                         </button>
                                     </div>
 
                                     {module.lessons?.map((lesson, lesIdx) => (
-                                        <div key={lesIdx} className="card bg-base-200 border border-base-300">
-                                            <div className="card-body">
-                                                <div className="flex justify-between items-center mb-3">
+                                        <div key={lesIdx} className="card min-w-0 bg-base-200 border border-base-300">
+                                            <div className="card-body min-w-0 p-3 sm:p-6">
+                                                <div className="mb-3 flex items-center justify-between gap-3">
                                                     <h5 className="font-semibold">Lesson {lesIdx + 1}</h5>
                                                     <button
                                                         type="button"
@@ -260,13 +260,13 @@ export default function CreateCourse() {
                                                             newSyllabus[modIdx].lessons = newSyllabus[modIdx].lessons.filter((_, i) => i !== lesIdx);
                                                             setForm({ ...form, syllabus: newSyllabus });
                                                         }}
-                                                        className="btn btn-xs btn-error"
+                                                        className="btn btn-xs btn-error w-full sm:w-auto"
                                                     >
                                                         Remove
                                                     </button>
                                                 </div>
 
-                                                <div className="space-y-3">
+                                                <div className="min-w-0 space-y-3">
                                                     <div className="form-control">
                                                         <label className="label">
                                                             <span className="label-text">Lesson Title *</span>
@@ -290,7 +290,7 @@ export default function CreateCourse() {
                                                                 setForm({ ...form, syllabus: newSyllabus });
                                                             }}
                                                             placeholder="e.g., Setting up React"
-                                                            className="input input-bordered input-sm"
+                                                            className="input input-bordered input-sm w-full min-w-0"
                                                             required
                                                         />
                                                     </div>
@@ -318,14 +318,14 @@ export default function CreateCourse() {
                                                                 setForm({ ...form, syllabus: newSyllabus });
                                                             }}
                                                             placeholder="https://www.youtube.com/watch?v=..."
-                                                            className="input input-bordered input-sm"
+                                                            className="input input-bordered input-sm w-full min-w-0"
                                                             required
                                                         />
                                                     </div>
 
                                                     {/* Live Class Section */}
                                                     <div className="form-control">
-                                                        <div className="flex justify-between items-center mb-2">
+                                                        <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                                             <label className="label py-0">
                                                                 <span className="label-text font-semibold">Live Class (Optional)</span>
                                                             </label>
@@ -351,7 +351,7 @@ export default function CreateCourse() {
                                                                         });
                                                                         setForm({ ...form, syllabus: newSyllabus });
                                                                     }}
-                                                                    className="btn btn-sm btn-outline btn-info"
+                                                                    className="btn btn-sm btn-outline btn-info w-full sm:w-auto"
                                                                 >
                                                                     + Add Live Class
                                                                 </button>
@@ -374,14 +374,14 @@ export default function CreateCourse() {
                                                                         });
                                                                         setForm({ ...form, syllabus: newSyllabus });
                                                                     }}
-                                                                    className="btn btn-sm btn-ghost btn-error"
+                                                                    className="btn btn-sm btn-ghost btn-error w-full sm:w-auto"
                                                                 >
                                                                     Remove Live Class
                                                                 </button>
                                                             )}
                                                         </div>
                                                         {lesson?.liveClassLink !== undefined && (
-                                                            <div className="space-y-2">
+                                                            <div className="min-w-0 space-y-2">
                                                                 <input
                                                                     type="url"
                                                                     value={lesson?.liveClassLink || ""}
@@ -404,7 +404,7 @@ export default function CreateCourse() {
                                                                         setForm({ ...form, syllabus: newSyllabus });
                                                                     }}
                                                                     placeholder="https://meet.google.com/xxx-xxxx-xxx or https://zoom.us/j/xxxxx"
-                                                                    className="input input-bordered input-sm w-full"
+                                                                    className="input input-bordered input-sm w-full min-w-0"
                                                                 />
                                                                 <input
                                                                     type="datetime-local"
@@ -427,7 +427,7 @@ export default function CreateCourse() {
                                                                         });
                                                                         setForm({ ...form, syllabus: newSyllabus });
                                                                     }}
-                                                                    className="input input-bordered input-sm w-full"
+                                                                    className="input input-bordered input-sm w-full min-w-0"
                                                                 />
                                                             </div>
                                                         )}
@@ -435,7 +435,7 @@ export default function CreateCourse() {
 
                                                     {/* Assignment Section */}
                                                     <div className="form-control">
-                                                        <div className="flex justify-between items-center mb-2">
+                                                        <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                                             <label className="label py-0">
                                                                 <span className="label-text font-semibold">Assignment</span>
                                                             </label>
@@ -460,7 +460,7 @@ export default function CreateCourse() {
                                                                         });
                                                                         setForm({ ...form, syllabus: newSyllabus });
                                                                     }}
-                                                                    className="btn btn-sm btn-outline btn-secondary"
+                                                                    className="btn btn-sm btn-outline btn-secondary w-full sm:w-auto"
                                                                 >
                                                                     + Add Assignment
                                                                 </button>
@@ -483,7 +483,7 @@ export default function CreateCourse() {
                                                                         });
                                                                         setForm({ ...form, syllabus: newSyllabus });
                                                                     }}
-                                                                    className="btn btn-sm btn-ghost btn-error"
+                                                                    className="btn btn-sm btn-ghost btn-error w-full sm:w-auto"
                                                                 >
                                                                     Remove Assignment
                                                                 </button>
@@ -514,7 +514,7 @@ export default function CreateCourse() {
                                                                     setForm({ ...form, syllabus: newSyllabus });
                                                                 }}
                                                                 placeholder="Enter assignment instructions..."
-                                                                className="textarea textarea-bordered textarea-sm w-full"
+                                                                className="textarea textarea-bordered textarea-sm w-full min-w-0"
                                                                 rows="3"
                                                             />
                                                         )}
@@ -522,7 +522,7 @@ export default function CreateCourse() {
 
                                                     {/* Quiz Section */}
                                                     <div className="form-control">
-                                                        <div className="flex justify-between items-center mb-2">
+                                                        <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                                             <label className="label">
                                                                 <span className="label-text">Quiz Questions (Optional)</span>
                                                             </label>
@@ -540,16 +540,16 @@ export default function CreateCourse() {
                                                                     });
                                                                     setForm({ ...form, syllabus: newSyllabus });
                                                                 }}
-                                                                className="btn btn-xs btn-outline"
+                                                                className="btn btn-xs btn-outline w-full sm:w-auto"
                                                             >
                                                                 + Add Question
                                                             </button>
                                                         </div>
 
                                                         {lesson.quiz?.map((quizItem, qIdx) => (
-                                                            <div key={qIdx} className="card bg-base-300 border border-base-400 mb-2">
-                                                                <div className="card-body p-3">
-                                                                    <div className="flex justify-between items-center mb-2">
+                                                            <div key={qIdx} className="card min-w-0 bg-base-300 border border-base-400 mb-2">
+                                                                <div className="card-body min-w-0 p-3">
+                                                                    <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                                                                         <span className="text-sm font-semibold">Question {qIdx + 1}</span>
                                                                         <button
                                                                             type="button"
@@ -558,7 +558,7 @@ export default function CreateCourse() {
                                                                                 newSyllabus[modIdx].lessons[lesIdx].quiz = newSyllabus[modIdx].lessons[lesIdx].quiz.filter((_, i) => i !== qIdx);
                                                                                 setForm({ ...form, syllabus: newSyllabus });
                                                                             }}
-                                                                            className="btn btn-xs btn-error"
+                                                                            className="btn btn-xs btn-error w-full sm:w-auto"
                                                                         >
                                                                             Remove
                                                                         </button>
@@ -573,12 +573,12 @@ export default function CreateCourse() {
                                                                             setForm({ ...form, syllabus: newSyllabus });
                                                                         }}
                                                                         placeholder="Enter question"
-                                                                        className="input input-bordered input-sm mb-2"
+                                                                        className="input input-bordered input-sm mb-2 w-full min-w-0"
                                                                     />
 
-                                                                    <div className="space-y-1">
+                                                                    <div className="min-w-0 space-y-1">
                                                                         {quizItem.options.map((option, optIdx) => (
-                                                                            <div key={optIdx} className="flex gap-2 items-center">
+                                                                            <div key={optIdx} className="flex min-w-0 items-center gap-2">
                                                                                 <input
                                                                                     type="radio"
                                                                                     name={`quiz-${modIdx}-${lesIdx}-${qIdx}`}
@@ -599,7 +599,7 @@ export default function CreateCourse() {
                                                                                         setForm({ ...form, syllabus: newSyllabus });
                                                                                     }}
                                                                                     placeholder={`Option ${optIdx + 1}`}
-                                                                                    className="input input-bordered input-sm flex-1"
+                                                                                    className="input input-bordered input-sm min-w-0 flex-1"
                                                                                 />
                                                                             </div>
                                                                         ))}
@@ -632,12 +632,12 @@ export default function CreateCourse() {
                 </div>
 
                 {/* Batches Section */}
-                <div className="divider">Batches (Optional)</div>
-                <div className="space-y-3">
+                <div className="divider text-center text-sm sm:text-base">Batches (Optional)</div>
+                <div className="min-w-0 space-y-3">
                     {form.batches.map((batch, idx) => (
-                        <div key={idx} className="card bg-base-100 border border-base-300">
-                            <div className="card-body">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div key={idx} className="card min-w-0 bg-base-100 border border-base-300">
+                            <div className="card-body min-w-0 p-3 sm:p-6">
+                                <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2">
                                     <div className="form-control">
                                         <label className="label">
                                             <span className="label-text">Batch Name</span>
@@ -647,7 +647,7 @@ export default function CreateCourse() {
                                             value={batch.name}
                                             onChange={(e) => updateBatch(idx, "name", e.target.value)}
                                             placeholder="e.g., Batch 1, Jan 2025"
-                                            className="input input-bordered input-sm"
+                                            className="input input-bordered input-sm w-full min-w-0"
                                         />
                                     </div>
 
@@ -659,7 +659,7 @@ export default function CreateCourse() {
                                             type="date"
                                             value={batch.startDate}
                                             onChange={(e) => updateBatch(idx, "startDate", e.target.value)}
-                                            className="input input-bordered input-sm"
+                                            className="input input-bordered input-sm w-full min-w-0"
                                         />
                                     </div>
                                 </div>
@@ -667,7 +667,7 @@ export default function CreateCourse() {
                                 <button
                                     type="button"
                                     onClick={() => removeBatch(idx)}
-                                    className="btn btn-sm btn-error mt-2"
+                                    className="btn btn-sm btn-error mt-2 w-full sm:w-auto"
                                 >
                                     Remove Batch
                                 </button>
@@ -678,17 +678,17 @@ export default function CreateCourse() {
                     <button
                         type="button"
                         onClick={addBatch}
-                        className="btn btn-outline btn-sm"
+                        className="btn btn-outline btn-sm w-full sm:w-auto"
                     >
                         + Add Batch
                     </button>
                 </div>
 
-                <div className="flex gap-3 pt-6">
+                <div className="flex flex-col-reverse gap-3 pt-6 sm:flex-row">
                     <button
                         type="submit"
                         disabled={creating}
-                        className="btn btn-primary flex-1"
+                        className="btn btn-primary w-full min-w-0 sm:flex-1"
                     >
                         {creating ? (
                             <>
@@ -702,7 +702,7 @@ export default function CreateCourse() {
                     <button
                         type="button"
                         onClick={() => navigate("/admin/courses")}
-                        className="btn btn-outline"
+                        className="btn btn-outline w-full sm:w-auto"
                     >
                         Cancel
                     </button>

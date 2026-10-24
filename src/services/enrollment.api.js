@@ -1,7 +1,12 @@
 import api from "./api";
 
 export const enrollInCourse = (courseId, batchId = null) => {
-    return api.post(`/enrollments/${courseId}`, batchId ? { batchId } : {});
+    const payload =
+        batchId !== null && batchId !== undefined
+            ? { batchId }
+            : {};
+
+    return api.post(`/enrollments/${courseId}`, payload);
 };
 
 export const getMyEnrollments = () => {
@@ -9,5 +14,8 @@ export const getMyEnrollments = () => {
 };
 
 export const completeLesson = (enrollmentId, lessonId) => {
-    return api.patch(`/enrollments/${enrollmentId}/complete-lesson`, { lessonId });
+    return api.patch(
+        `/enrollments/${enrollmentId}/complete-lesson`,
+        { lessonId }
+    );
 };
