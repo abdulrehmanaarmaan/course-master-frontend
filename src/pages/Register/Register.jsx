@@ -122,7 +122,7 @@ export default function Register() {
                                         value={form.adminKey}
                                         onChange={handleChange}
                                         placeholder="Enter admin registration key"
-                                        className="input input-bordered w-full text-sm min-h-[40px]"
+                                        className="input input-bordered w-full text-sm min-h-10"
                                     />
                                     <span className="label-text-alt text-[11px] text-base-content/60 block px-1">
                                         Only required for creating elevated administrative accounts.
