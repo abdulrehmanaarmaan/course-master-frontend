@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCourses, setPage } from "../../../store/slices/coursesSlice";
 import { deleteCourseAsync, clearSuccess } from "../../../store/slices/adminSlice";
 import { Link } from "react-router-dom";
+import CardListSkeleton from "../../../components/Loaders/CardListSkeleton";
+import TableSkeleton from "../../../components/Loaders/TableSkeleton";
 
 // Helper function to calculate syllabus statistics
 const getSyllabusStats = (course) => {
@@ -41,8 +43,10 @@ export default function ManageCourses() {
     const { courses, totalPages, page, loading } = useSelector((state) => state.courses);
     const { success, error } = useSelector((state) => state.admin);
 
+    const [loadedOnce, setLoadedOnce] = useState(false);
+
     useEffect(() => {
-        dispatch(fetchCourses({ page, limit: 10 }));
+        dispatch(fetchCourses({ page, limit: 10 })).finally(() => setLoadedOnce(true));
     }, [dispatch, page]);
 
     const handleDelete = (id) => {
@@ -82,10 +86,15 @@ export default function ManageCourses() {
                 </div>
             )}
 
-            {loading ? (
-                <div className="flex justify-center">
-                    <span className="loading loading-spinner"></span>
-                </div>
+            {loading || !loadedOnce ? (
+                <>
+                    <div className="hidden md:block">
+                        <TableSkeleton columns={6} rows={10} label="Loading courses" />
+                    </div>
+                    <div className="md:hidden">
+                        <CardListSkeleton count={5} label="Loading courses" />
+                    </div>
+                </>
             ) : courses.length === 0 ? (
                 <div className="alert">No courses found</div>
             ) : (

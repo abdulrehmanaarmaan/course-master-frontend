@@ -5,6 +5,7 @@ import { getCourses } from "../../services/courses.api";
 import CoursesFilters from "./CoursesFilters";
 import CoursesGrid from "./CoursesGrid";
 import CoursesPagination from "./CoursesPagination";
+import CourseGridSkeleton from "../Loaders/CourseGridSkeleton";
 
 export default function CoursesSection() {
     const { user } = useSelector((state) => state.auth);
@@ -76,11 +77,7 @@ export default function CoursesSection() {
             />
 
             {/* Loading State */}
-            {loading && (
-                <div className="flex justify-center py-12">
-                    <span className="loading loading-spinner loading-lg text-primary"></span>
-                </div>
-            )}
+            {loading && <CourseGridSkeleton count={limit} />}
 
             {/* Error State */}
             {error && (

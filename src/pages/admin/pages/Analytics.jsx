@@ -12,6 +12,8 @@ import {
     ResponsiveContainer,
 } from "recharts";
 import { getAnalytics } from "../../../services/admin.api";
+import StatCardsSkeleton from "../../../components/Loaders/StatCardsSkeleton";
+import ChartCardSkeleton from "../../../components/Loaders/ChartCardSkeleton";
 
 export default function Analytics() {
     const [data, setData] = useState(null);
@@ -37,8 +39,23 @@ export default function Analytics() {
 
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-[60vh]">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
+            <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
+                <h1 className="text-xl sm:text-2xl font-bold text-base-content">
+                    Analytics Dashboard
+                </h1>
+
+                <StatCardsSkeleton
+                    count={4}
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4"
+                />
+
+                <ChartCardSkeleton heightClass="h-[280px] sm:h-[320px]" label="Loading enrollment trend" />
+                <ChartCardSkeleton heightClass="h-[300px] sm:h-[350px]" label="Loading top courses" />
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                    <ChartCardSkeleton heightClass="h-16" label="Loading platform statistics" />
+                    <ChartCardSkeleton heightClass="h-16" label="Loading growth metrics" />
+                </div>
             </div>
         );
     }

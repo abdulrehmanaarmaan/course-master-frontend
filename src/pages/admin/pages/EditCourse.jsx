@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCourseById } from "../../../store/slices/coursesSlice";
 import { useNavigate, useParams } from "react-router-dom";
 import { updateCourseAsync } from "../../../store/slices/adminSlice";
+import FormSkeleton from "../../../components/Loaders/FormSkeleton";
 
 // <input type="datetime-local"> expects LOCAL time ("YYYY-MM-DDTHH:mm").
 // toISOString() returns UTC, which shifts the shown time by the user's UTC offset.
@@ -142,8 +143,9 @@ export default function EditCourse() {
 
     if (detailLoading || !fetched) {
         return (
-            <div className="flex justify-center py-12">
-                <span className="loading loading-spinner loading-lg"></span>
+            <div className="mx-auto w-full max-w-4xl min-w-0">
+                <h1 className="page-heading mb-4 sm:mb-6">Edit Course</h1>
+                <FormSkeleton />
             </div>
         );
     }

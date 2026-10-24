@@ -23,6 +23,7 @@ import Profile from "./pages/Profile/Profile";
 import StudentEnrolledCourses from "./pages/student/pages/StudentEnrolledCourses";
 import DashboardLayoutSkeleton from "./components/Loaders/DashboardLayoutSkeleton";
 import DashboardContentSkeleton from "./components/Loaders/DashboardContentSkeleton";
+import Unauthorized from "./pages/Unauthorized/Unauthorized";
 
 // Lazy-loaded student and admin pages
 const StudentDashboard = lazy(
@@ -100,6 +101,7 @@ export default function App() {
 
           {/* Public-layout fallback */}
           <Route path="*" element={<NotFound />} />
+          <Route path="/unauthorized" element={<Unauthorized />} />
         </Route>
 
         {/* Student routes: outside the public layout */}
@@ -247,6 +249,7 @@ export default function App() {
 
         {/* Global fallback for unmatched dashboard/player routes */}
         <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<Unauthorized />} />
       </Routes>
     </BrowserRouter>
   );

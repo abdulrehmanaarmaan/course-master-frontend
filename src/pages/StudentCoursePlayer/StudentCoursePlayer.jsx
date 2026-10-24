@@ -14,6 +14,8 @@ import {
 import { submitAssignment } from "../../services/assignment.api";
 
 import LearningHeader from "./components/LearningHeader";
+import { PlayerSkeleton } from "../../components/Loaders/PlayerSkeleton";
+import SkeletonBar from "../../components/Loaders/SkeletonBar";
 
 const getResponseData = (response) =>
     response?.data?.data ?? response?.data ?? response;
@@ -480,20 +482,7 @@ export default function StudentCoursePlayer() {
         completedLessonIds.has(selectedLesson._playerId);
 
     if (loading) {
-        return (
-            <main className="flex min-h-dvh items-center justify-center bg-base-200 px-4">
-                <div
-                    className="flex flex-col items-center gap-3 text-center sm:flex-row"
-                    role="status"
-                    aria-live="polite"
-                >
-                    <span className="loading loading-spinner loading-lg text-primary" />
-                    <span className="text-sm sm:text-base">
-                        Loading your course...
-                    </span>
-                </div>
-            </main>
-        );
+        return <PlayerSkeleton />;
     }
 
     if (error && !course) {
@@ -1132,18 +1121,6 @@ function AssignmentSubmission({
         }
     };
 
-    if (loadingPrevious) {
-        return (
-            <div
-                className="mt-6 flex justify-center"
-                role="status"
-                aria-label="Loading assignment"
-            >
-                <span className="loading loading-spinner" />
-            </div>
-        );
-    }
-
     return (
         <section className="mt-7 min-w-0 border-t border-base-300 pt-5">
             <h2 className="text-lg font-bold">Assignment</h2>
@@ -1170,7 +1147,13 @@ function AssignmentSubmission({
                 </div>
             )}
 
-            {previousSubmission ? (
+            {loadingPrevious ? (
+                <div className="mt-4 space-y-3" role="status" aria-label="Loading your submission">
+                    <SkeletonBar className="h-4 w-48" />
+                    <SkeletonBar className="h-32 w-full" />
+                    <SkeletonBar className="h-10 w-40" />
+                </div>
+            ) : previousSubmission ? (
                 <div className="mt-4 min-w-0 rounded-xl bg-base-200 p-3 sm:p-4">
                     <div className="flex flex-wrap items-center justify-between gap-2">
                         <h3 className="font-semibold">
@@ -1360,18 +1343,6 @@ function QuizInterface({
         }
     };
 
-    if (loadingPrevious) {
-        return (
-            <div
-                className="mt-6 flex justify-center"
-                role="status"
-                aria-label="Loading quiz results"
-            >
-                <span className="loading loading-spinner" />
-            </div>
-        );
-    }
-
     const displayedResult = result || previousSubmission;
     const score =
         displayedResult?.percent ??
@@ -1390,12 +1361,12 @@ function QuizInterface({
                 )}
             </div>
 
-            {displayedResult && (
+            {loadingPrevious ? (
+                <SkeletonBar className="mt-4 h-16 w-full" />
+            ) : displayedResult ? (
                 <div className="alert alert-info mt-4 min-w-0">
                     <div className="min-w-0">
-                        <p className="font-semibold">
-                            Latest quiz result
-                        </p>
+                        <p className="font-semibold">Latest quiz result</p>
 
                         <p className="break-words">
                             Score: {score}%
@@ -1404,7 +1375,7 @@ function QuizInterface({
                         </p>
                     </div>
                 </div>
-            )}
+            ) : null}
 
             <div className="mt-4 space-y-4">
                 {quiz.map((question, questionIndex) => (
@@ -1468,10 +1439,9 @@ function QuizInterface({
                 onClick={handleSubmit}
                 disabled={
                     loading ||
+                    loadingPrevious ||
                     quiz.length === 0 ||
-                    quiz.some(
-                        (_, index) => answers[index] === undefined
-                    )
+                    quiz.some((_, index) => answers[index] === undefined)
                 }
             >
                 {loading

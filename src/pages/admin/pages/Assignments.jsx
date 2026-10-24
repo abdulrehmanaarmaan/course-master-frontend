@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAssignments } from "../../../store/slices/adminSlice";
 import { reviewAssignment } from "../../../services/admin.api";
+import TableSkeleton from "../../../components/Loaders/TableSkeleton";
+import CardListSkeleton from "../../../components/Loaders/CardListSkeleton";
 
 export default function Assignments() {
     const dispatch = useDispatch();
@@ -14,8 +16,10 @@ export default function Assignments() {
     const [reviewGrade, setReviewGrade] = useState("");
     const [actionLoading, setActionLoading] = useState(false);
 
+    const [loaded, setLoaded] = useState(false);
+
     useEffect(() => {
-        dispatch(fetchAssignments());
+        dispatch(fetchAssignments()).finally(() => setLoaded(true));
     }, [dispatch]);
 
     // start review: open the inline review form for this submission
@@ -301,10 +305,15 @@ export default function Assignments() {
                     </div>
 
                     {/* Results */}
-                    {loading ? (
-                        <div className="flex justify-center">
-                            <span className="loading loading-spinner loading-lg"></span>
-                        </div>
+                    {loading || !loaded ? (
+                        <>
+                            <div className="hidden md:block">
+                                <TableSkeleton columns={8} rows={6} label="Loading assignments" />
+                            </div>
+                            <div className="md:hidden">
+                                <CardListSkeleton count={4} label="Loading assignments" />
+                            </div>
+                        </>
                     ) : filteredAssignments.length === 0 ? (
                         <div className="alert">
                             <span>No assignments found</span>

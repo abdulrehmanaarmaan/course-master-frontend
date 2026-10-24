@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { getAllUsers, deleteUser, updateUserRole, toggleBanUser } from "../../../services/admin.api";
 import { useSelector } from "react-redux";
 import { Trash2, Shield, ShieldOff, Ban, Unlock, MoreVertical, Users } from "lucide-react";
+import TableSkeleton from "../../../components/Loaders/TableSkeleton";
+import CardListSkeleton from "../../../components/Loaders/CardListSkeleton";
 
 export default function ManageUsers() {
     const [users, setUsers] = useState([]);
@@ -27,9 +29,9 @@ export default function ManageUsers() {
         loadCurrentUser();
     }, []);
 
-    const fetchUsers = async () => {
+    const fetchUsers = async ({ silent = false } = {}) => {
         try {
-            setLoading(true);
+            if (!silent) setLoading(true);
             setError(null);
             const res = await getAllUsers();
             setUsers(res.data || []);
@@ -147,14 +149,6 @@ export default function ManageUsers() {
         return currentUserId === userId;
     };
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center py-12">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
-            </div>
-        );
-    }
-
     const renderActionMenu = (userItem, isOpen, isLastRow = false) => {
         const isSelf = isCurrentUser(userItem._id);
         const isLoading = actionLoading === userItem._id;
@@ -265,7 +259,16 @@ export default function ManageUsers() {
                 </div>
             )}
 
-            {users.length === 0 ? (
+            {loading ? (
+                <>
+                    <div className="hidden lg:block">
+                        <TableSkeleton columns={6} rows={6} label="Loading users" />
+                    </div>
+                    <div className="lg:hidden">
+                        <CardListSkeleton count={4} label="Loading users" />
+                    </div>
+                </>
+            ) : users.length === 0 ? (
                 <div className="alert alert-info shadow-sm text-xs sm:text-sm">
                     <span>No users found</span>
                 </div>

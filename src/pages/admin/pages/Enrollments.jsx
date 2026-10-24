@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchEnrollments } from "../../../store/slices/adminSlice";
 import { fetchCourses } from "../../../store/slices/coursesSlice";
+import TableSkeleton from "../../../components/Loaders/TableSkeleton";
+import CardListSkeleton from "../../../components/Loaders/CardListSkeleton";
 
 export default function Enrollments() {
     const dispatch = useDispatch();
@@ -10,9 +12,13 @@ export default function Enrollments() {
     const [selectedCourse, setSelectedCourse] = useState("");
     const [searchStudent, setSearchStudent] = useState("");
 
+    const [loaded, setLoaded] = useState(false);
+
     useEffect(() => {
-        dispatch(fetchEnrollments());
-        dispatch(fetchCourses({ page: 1, limit: 100 }));
+        Promise.allSettled([
+            dispatch(fetchEnrollments()),
+            dispatch(fetchCourses({ page: 1, limit: 100 })),
+        ]).then(() => setLoaded(true));
     }, [dispatch]);
 
     // Filter enrollments by selected course and student name
@@ -65,10 +71,15 @@ export default function Enrollments() {
             </div>
 
             {/* Results */}
-            {loading ? (
-                <div className="flex justify-center py-6">
-                    <span className="loading loading-spinner loading-lg"></span>
-                </div>
+            {loading || !loaded ? (
+                <>
+                    <div className="hidden md:block">
+                        <TableSkeleton columns={5} rows={8} label="Loading enrollments" />
+                    </div>
+                    <div className="md:hidden">
+                        <CardListSkeleton count={5} label="Loading enrollments" />
+                    </div>
+                </>
             ) : filteredEnrollments.length === 0 ? (
                 <div className="alert min-w-0 break-words">
                     <span>No enrollments found</span>

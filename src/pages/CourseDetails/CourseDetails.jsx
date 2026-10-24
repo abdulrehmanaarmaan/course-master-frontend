@@ -7,6 +7,7 @@ import {
 } from "../../store/slices/coursesSlice";
 import { enrollCourseAsync, clearSuccess } from "../../store/slices/enrollmentSlice";
 import { getMeAsync } from "../../store/slices/authSlice";
+import SkeletonBar from "../../components/Loaders/SkeletonBar";
 
 export default function CourseDetails() {
     const { id } = useParams();
@@ -14,21 +15,39 @@ export default function CourseDetails() {
     const dispatch = useDispatch();
 
     const { currentCourse, detailLoading, error: courseError } = useSelector((state) => state.courses);
-    const { enrolling, error: enrollError, success, enrollments: myEnrollments } = useSelector((state) => state.enrollment);
+    const { enrolling, error: enrollError, success, enrollments: myEnrollments, loading: enrollmentsLoading } = useSelector((state) => state.enrollment);
     const { user, token } = useSelector((state) => state.auth);
     const [selectedBatchId, setSelectedBatchId] = useState(null);
 
+    const [fetchedId, setFetchedId] = useState(null);
+    const [userChecked, setUserChecked] = useState(false);
+
     useEffect(() => {
-        dispatch(fetchCourseById(id));
-        return () => dispatch(clearCurrentCourse());
+        let cancelled = false;
+        dispatch(fetchCourseById(id)).finally(() => {
+            if (!cancelled) setFetchedId(id);
+        });
+        return () => {
+            cancelled = true;
+            dispatch(clearCurrentCourse());
+        };
     }, [id, dispatch]);
 
     // Load user if token exists but user is not loaded
     useEffect(() => {
-        if (token && !user) {
-            dispatch(getMeAsync());
-        }
+        if (!token || user) return;
+        let cancelled = false;
+        dispatch(getMeAsync()).finally(() => {
+            if (!cancelled) setUserChecked(true);
+        });
+        return () => {
+            cancelled = true;
+        };
     }, [token, user, dispatch]);
+
+    const loaded = fetchedId === id;
+    // true while we don't yet know who the user is or whether they are enrolled
+    const checkingAccess = !!token && (user ? enrollmentsLoading : !userChecked);
 
     const isCreator = user && currentCourse && user._id === currentCourse.instructorId;
     const isAdmin = user && user.role === "admin";
@@ -100,10 +119,53 @@ export default function CourseDetails() {
         }
     }, [success, navigate, dispatch]);
 
-    if (detailLoading) {
+    if (!loaded || detailLoading) {
         return (
-            <div className="flex justify-center items-center min-h-[50vh]">
-                <span className="loading loading-spinner loading-lg text-primary"></span>
+            <div
+                role="status"
+                aria-live="polite"
+                className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden"
+            >
+                <span className="sr-only">Loading course</span>
+
+                {/* Header card */}
+                <div className="card bg-base-100 border border-base-300 shadow-md">
+                    <div className="card-body p-4 sm:p-6 space-y-2">
+                        <SkeletonBar className="h-7 w-3/4 sm:h-9" />
+
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                            <SkeletonBar className="h-5 w-16 rounded-full" />
+                            <SkeletonBar className="h-5 w-20 rounded-full" />
+                            <SkeletonBar className="h-5 w-14 rounded-full" />
+                        </div>
+
+                        <SkeletonBar className="h-4 w-48" />
+
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 pt-3 border-t border-base-200 mt-2">
+                            <SkeletonBar className="h-8 w-28 sm:h-9" />
+                            <SkeletonBar className="h-10 w-full sm:w-36" />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Description card */}
+                <div className="card bg-base-100 border border-base-300 shadow-sm">
+                    <div className="card-body p-4 sm:p-6 space-y-2">
+                        <SkeletonBar className="mb-1 h-5 w-44" />
+                        <SkeletonBar className="h-4 w-full" />
+                        <SkeletonBar className="h-4 w-full" />
+                        <SkeletonBar className="h-4 w-2/3" />
+                    </div>
+                </div>
+
+                {/* Batches / syllabus card */}
+                <div className="card bg-base-100 border border-base-300 shadow-sm">
+                    <div className="card-body p-4 sm:p-6 space-y-2">
+                        <SkeletonBar className="mb-1 h-5 w-40" />
+                        <SkeletonBar className="h-12 w-full rounded-xl" />
+                        <SkeletonBar className="h-12 w-full rounded-xl" />
+                    </div>
+                </div>
             </div>
         );
     }
@@ -147,7 +209,9 @@ export default function CourseDetails() {
                         </p>
 
                         <div className="w-full sm:w-auto">
-                            {isAdmin ? (
+                            {checkingAccess ? (
+                                <SkeletonBar className="h-10 w-full sm:w-36" />
+                            ) : isAdmin ? (
                                 <Link
                                     to={`/admin/courses/edit/${id}`}
                                     className="btn btn-primary btn-sm sm:btn-md gap-2 w-full sm:w-auto"
@@ -250,6 +314,10 @@ export default function CourseDetails() {
                         )}
                     </div>
                 </div>
+            )}
+
+            {checkingAccess && course.syllabus && course.syllabus.length > 0 && (
+                <ChartCardSkeleton heightClass="h-24" label="Loading syllabus" />
             )}
 
             {/* Course Syllabus Section (Enrolled or Admin) */}

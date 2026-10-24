@@ -25,6 +25,10 @@ import {
     Video,
     TrendingUp,
 } from "lucide-react";
+import SkeletonBar from "../../../components/Loaders/SkeletonBar";
+import ChartCardSkeleton from "../../../components/Loaders/ChartCardSkeleton";
+import TableSkeleton from "../../../components/Loaders/TableSkeleton";
+import CardListSkeleton from "../../../components/Loaders/CardListSkeleton";
 
 export default function AdminOverview() {
     const dispatch = useDispatch();
@@ -32,11 +36,20 @@ export default function AdminOverview() {
     const { enrollments, assignments } = useSelector((state) => state.admin);
     const [analytics, setAnalytics] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [ready, setReady] = useState(false);
 
     useEffect(() => {
-        dispatch(fetchEnrollments());
-        dispatch(fetchAssignments());
-        loadAnalytics();
+        let cancelled = false;
+        Promise.allSettled([
+            dispatch(fetchEnrollments()),
+            dispatch(fetchAssignments()),
+            loadAnalytics(),
+        ]).then(() => {
+            if (!cancelled) setReady(true);
+        });
+        return () => {
+            cancelled = true;
+        };
     }, [dispatch]);
 
     const loadAnalytics = async () => {
@@ -131,10 +144,12 @@ export default function AdminOverview() {
     ];
 
     // Enrollment by course (top 5)
-    const courseEnrollmentData = analytics?.topCourses?.slice(0, 5).map((course) => ({
-        name: course.courseTitle || "Unknown",
-        enrollments: course.count,
-    })) || [];
+    const courseEnrollmentData = (analytics?.enrollmentsByCourse || [])
+        .slice(0, 5)
+        .map((course) => ({
+            name: course.courseName || "Unknown",
+            enrollments: course.enrollments,
+        }));
 
     return (
         <div className="space-y-4 sm:space-y-6 max-w-full overflow-x-hidden">
@@ -186,7 +201,7 @@ export default function AdminOverview() {
                                         {stat.title}
                                     </p>
                                     <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold">
-                                        {stat.value}
+                                        {ready ? stat.value : <SkeletonBar className="h-8 w-14 sm:h-9" />}
                                     </h2>
                                     {stat.trend && (
                                         <div className="flex items-center gap-1 mt-1.5 text-xs sm:text-sm opacity-90">
@@ -211,9 +226,7 @@ export default function AdminOverview() {
                             Enrollment Trends (Last 30 Days)
                         </h2>
                         {loading ? (
-                            <div className="flex justify-center items-center h-60">
-                                <span className="loading loading-spinner loading-lg text-primary"></span>
-                            </div>
+                            <SkeletonBar className="h-[220px] w-full sm:h-[260px]" />
                         ) : enrollmentChartData.length > 0 ? (
                             <div className="w-full overflow-x-auto">
                                 <div className="min-w-[320px] h-[220px] sm:h-[260px]">
@@ -255,7 +268,9 @@ export default function AdminOverview() {
                         <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-base-content">
                             Assignment Status
                         </h2>
-                        {assignmentStatusData.some((d) => d.value > 0) ? (
+                        {!ready ? (
+                            <SkeletonBar className="h-[220px] w-full sm:h-[260px]" />
+                        ) : assignmentStatusData.some((d) => d.value > 0) ? (
                             <div className="w-full overflow-x-auto">
                                 <div className="min-w-[280px] h-[220px] sm:h-[260px]">
                                     <ResponsiveContainer width="100%" height="100%">
@@ -299,7 +314,9 @@ export default function AdminOverview() {
             </div>
 
             {/* Top Courses Chart */}
-            {courseEnrollmentData.length > 0 && (
+            {loading ? (
+                <ChartCardSkeleton heightClass="h-[260px] sm:h-[300px]" label="Loading top courses" />
+            ) : courseEnrollmentData.length > 0 && (
                 <div className="card bg-base-100 border border-base-300 shadow-sm overflow-hidden">
                     <div className="card-body p-3 sm:p-6">
                         <h2 className="text-base sm:text-lg font-bold mb-3 sm:mb-4 text-base-content">
@@ -338,7 +355,9 @@ export default function AdminOverview() {
             )}
 
             {/* Analytics Summary Section */}
-            {analytics && (
+            {loading ? (
+                <ChartCardSkeleton heightClass="h-24" label="Loading analytics summary" />
+            ) : analytics && (
                 <div className="card bg-base-100 border border-base-300 shadow-sm">
                     <div className="card-body p-3 sm:p-6">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
@@ -386,7 +405,9 @@ export default function AdminOverview() {
                     <div className="card bg-base-100 border border-base-300 shadow-sm">
                         <div className="card-body p-5">
                             <h2 className="text-lg font-bold mb-3 text-base-content">Recent Enrollments</h2>
-                            {enrollments.length === 0 ? (
+                            {!ready ? (
+                                <TableSkeleton columns={3} rows={5} label="Loading recent enrollments" />
+                            ) : enrollments.length === 0 ? (
                                 <p className="text-sm text-base-content/70">No enrollments yet</p>
                             ) : (
                                 <div className="overflow-x-auto">
@@ -419,7 +440,9 @@ export default function AdminOverview() {
                 {/* Mobile Cards View */}
                 <div className="md:hidden space-y-2.5">
                     <h2 className="text-base font-bold text-base-content px-1">Recent Enrollments</h2>
-                    {enrollments.length === 0 ? (
+                    {!ready ? (
+                        <CardListSkeleton count={4} label="Loading recent enrollments" />
+                    ) : enrollments.length === 0 ? (
                         <p className="text-xs text-base-content/70 px-1">No enrollments yet</p>
                     ) : (
                         enrollments.slice(0, 10).map((enroll) => (

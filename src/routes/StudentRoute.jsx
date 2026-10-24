@@ -1,8 +1,9 @@
 // AdminRoute.jsx
-import { Navigate, redirect } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getToken } from "../utils/auth";
 import { getMe } from "../services/auth.api";
+import DashboardLayoutSkeleton from "../components/Loaders/DashboardLayoutSkeleton";
 
 export default function StudentRoute({ children }) {
     const [status, setStatus] = useState("loading");
@@ -29,11 +30,11 @@ export default function StudentRoute({ children }) {
         return () => {
             cancelled = true;
         };
-    }, [redirect]);
+    }, []);
 
-    if (status === "loading") return <div>Loading…</div>;
+    if (status === "loading") return <DashboardLayoutSkeleton role="student" />;
     if (status === "unauthenticated") return <Navigate to="/login" replace />;
-    if (user?.role !== "student") return <Navigate to="/not-found" replace />;
+    if (user?.role !== "student") return <Navigate to="/unauthorized" replace />;
 
     return children;
 }
