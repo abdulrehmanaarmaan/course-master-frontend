@@ -937,7 +937,7 @@ export default function StudentCoursePlayer() {
 
                                                                     <button
                                                                         type="button"
-                                                                        className={`my-1 mr-1 inline-flex min-h-10 min-w-10 shrink-0 items-center justify-center self-start rounded-lg transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 sm:mr-2 ${durationOpen
+                                                                        className={`my-1 mr-1 inline-flex min-h-10 min-w-10 shrink-0 items-center justify-center self-start rounded-lg transition-colors focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 sm:mr-2 ${durationOpen
                                                                             ? "bg-primary/15 text-primary"
                                                                             : "text-base-content/60 hover:bg-base-300 hover:text-base-content"
                                                                             }`}
